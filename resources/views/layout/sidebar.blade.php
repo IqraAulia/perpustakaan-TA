@@ -29,15 +29,20 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('kategori.index') }}">
+                        <i class="fas fa-bars"></i>
+                        <p>Kategori</p>
+                    </a>
+                </li>
+
+
+
+
+
+                <li class="nav-item">
                     <a href="{{ route('buku.index') }}">
                         <i class="fas fa-book"></i>
                         <p>kelola Buku</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('kategori.index') }}">
-                        <i class="fas fa-bars"></i>
-                        <p>kategori</p>
                     </a>
                 </li>
                 <li class="nav-item">

@@ -19,6 +19,25 @@ Route::get('/', function () {
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+Route::group(['prefix' => 'kategori', 'as' => 'kategori.',], function () {
+    Route::get('/', [KategoriController::class, 'index'])->name('index');
+    Route::post('/store', [KategoriController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [KategoriController::class, 'edit'])->name('edit');
+    Route::post('/{id}/update', [KategoriController::class, 'update'])->name('update');
+    Route::delete('/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 Route::group(['prefix' => 'buku', 'as' => 'buku.',], function () {
     Route::get('/', [BukuController::class, 'index'])->name('index');
@@ -28,12 +47,6 @@ Route::group(['prefix' => 'buku', 'as' => 'buku.',], function () {
     Route::delete('/destroy', [BukuController::class, 'destroy'])->name('destroy');
 });
 
-Route::group(['prefix' => 'kategori', 'as' => 'kategori.',], function () {
-    Route::get('/', [KategoriController::class, 'index'])->name('index');
-    Route::post('/store', [KategoriController::class, 'store'])->name('store');
-    Route::post('/update', [KategoriController::class, 'update'])->name('update');
-    Route::delete('/destroy', [KategoriController::class, 'destroy'])->name('destroy');
-});
 
 Route::group(['prefix' => 'user', 'as' => 'user.',], function () {
     Route::get('/', [UserController::class, 'index'])->name('index');
