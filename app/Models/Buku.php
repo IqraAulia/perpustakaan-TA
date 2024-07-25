@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Buku extends Model
+{
+    use HasFactory;
+    protected $fillable = [
+        'gambar_buku',
+        'judul_buku',
+        'daftar_isi',
+        'kategori_id',
+        'pengarang',
+        'penerbit',
+        'tahun_terbit',
+        'stok',
+        'status',
+        'kondisi',
+    ];
+}
+

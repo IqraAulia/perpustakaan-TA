@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Anggota;
 use Illuminate\Http\Request;
 
 class AnggotaController extends Controller
@@ -13,7 +14,10 @@ class AnggotaController extends Controller
     }
     public function store(Request $request)
     {
-        // Simpan anggota baru
+       
+        return view('page.anggota.index', [
+            'anggotas' => Anggota::all(),
+        ]);
     }
 
     public function update(Request $request, $id)

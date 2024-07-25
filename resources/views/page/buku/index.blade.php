@@ -7,14 +7,21 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center">
-                                <h4 class="card-title">Kelola Buku</h4>
+                                <h4 class="card-title">List Buku</h4>
                                 <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal"
-                                    data-bs-target="#addBuku">
+                                    data-bs-target="#addModal">
                                     <i class="fa fa-plus"></i>
-                                    Tambah Buku
+                                    Add
                                 </button>
                             </div>
                             <div class="h6" id="datetime"></div>
+                            <div>
+                                @if (session('success'))
+                                    <div class="alert alert-success">
+                                        {{ session('success') }}
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -31,68 +38,35 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Vivamus</td>
-                                            <td>Lorem ipsum dolor sit amet Donec tempor purus ideeeeeeeee </td>
-                                            <td>2024</td>
-                                            <td>Tersedia</td>
-                                            <td>
-                                                <a href="{{ route('buku.detail') }}">
-                                                    <i class="fas fa-info-circle" style="color: #1572E8"></i>
-                                                </a>
-                                            </td>
-
-                                            <td>
-                                                <button type="button" data-bs-toggle="tooltip" title=""
-                                                    class="btn btn-link btn-danger" data-original-title="Remove">
-                                                    <i class="fa fa-times"></i>
-                                                </button>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>consectetur</td>
-                                            <td>consectetur adipiscing elit Vestibulum ante ipsum primis </td>
-                                            <td>2024</td>
-                                            <td>Kosong</td>
-                                            <td>
-                                                <a href="{{ route('buku.detail') }}">
-                                                    <i class="fas fa-info-circle" style="color: #1572E8"></i>
-                                                </a>
-                                            </td>
-
-                                            <td>
-                                                <div class="form-button-action">
-                                                    <button type="button" data-bs-toggle="tooltip" title=""
-                                                        class="btn btn-link btn-danger" data-original-title="Remove">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Vestibulum</td>
-                                            <td>Nam efficitur dapibus lectus ac purus feugiat </td>
-                                            <td>2024</td>
-                                            <td>diajukan</td>
-                                            <td>
-                                                <a href="{{ route('buku.detail') }}">
-                                                    <i class="fas fa-info-circle" style="color: #1572E8"></i>
-                                                </a>
-                                            </td>
-
-                                            <td>
-                                                <div class="form-button-action">
-                                                    <button type="button" data-bs-toggle="tooltip" title=""
-                                                        class="btn btn-link btn-danger" data-original-title="Remove">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        @foreach ($bukus as $item)
+                                            <tr>
+                                                <td>{{ $item->id }}</td>
+                                                <td>{{ $item->kategori_id }}</td>
+                                                <td>{{ $item->judul_buku }}</td>
+                                                <td>{{ $item->stok }}</td>
+                                                <td>{{ $item->status }}</td>
+                                                <td>
+                                                    <a href="#">
+                                                        <i class="fas fa-info-circle" style="color: #1572E8"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <div class="form-button-action">
+                                                        <button type="button" data-id="{{ $item->id }}"
+                                                            data-bs-toggle="modal" data-bs-target="#editModal"
+                                                            class="btn btn-link btn-primary btn-lg"
+                                                            data-original-title="Edit Task">
+                                                            <i class="fa fa-edit"></i>
+                                                        </button>
+                                                        <button type="button" data-id="{{ $item->id }}"
+                                                            class="btn btn-link btn-danger btn-delete"
+                                                            data-original-title="Remove">
+                                                            <i class="fa fa-times"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -102,16 +76,40 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="addBuku" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    {{-- modal --}}
+    <div class="modal fade @if ($errors->any()) show @endif" id="addModal" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true"
+        @if ($errors->any()) style="display:block;" @endif>
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Buku</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="gambar">
-                        <div class="d-flex justify-content-start gap-2 form-group">
+                    @if (session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+                    @if ($errors->any())
+                        <div class="">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    <form action="{{ route('buku.store') }}" method="POST" enctype="multipart/form-data" id="addForm">
+                        @csrf
+                        <div class="form-group">
+                            <label for="exampleFormControlFile1">Example file input</label>
+                            <input type="file" class="form-control-file" id="exampleFormControlFile1" name="gambar_buku"
+                                value="{{ old('gambar_buku') }}" />
+                        </div>
+                        {{-- <div class="d-flex justify-content-start gap-2 form-group">
                             <div class="avatar-xxl">
                                 <img src="{{ asset('kaiadmin-lite-1.0.0/assets/img/mentahan.jpg') }}" alt="..."
                                     class="avatar-img rounded">
@@ -126,52 +124,219 @@
                                         style="background-color: #FFECEC; color:#e81515; border-radius:15px; padding-bottom:5px; padding-top:5px; padding-right: 25px; padding-left:25px ">Batal</button>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="form-group">
-                            <label for="defaultSelect">Kategori</label>
-                            <select class="form-select form-control" id="defaultSelect">
-                                <option>Vivamus</option>
-                                <option>consectetur</option>
-                                <option>Vestibulum</option>
+                            <label>Kategori</label>
+                            <select class="form-select form-control" name="kategori_id">
+                                <option value="">-Pilih-</option>
+                                <option value="aktif" {{ old('kategori_id') == 'aktif' ? 'selected' : '' }}>a</option>
+                                <option value="nonaktif" {{ old('kategori_id') == 'nonaktif' ? 'selected' : '' }}>b
+                                </option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="largeInput">Judul buku</label>
-                            <input type="text" class="form-control form-control" id="defaultInput"
-                                placeholder="Masukan Judul Buku" />
+                            <label>Judul buku</label>
+                            <input type="text" class="form-control form-control" name="judul_buku"
+                                value="{{ old('judul_buku') }}" />
                         </div>
                         <div class="form-group">
-                            <label for="largeInput">Pengarang</label>
-                            <input type="text" class="form-control form-control" id="defaultInput"
-                                placeholder="Masukan Pengarang" />
+                            <label>Pengarang</label>
+                            <input type="text" class="form-control form-control" name="pengarang"
+                                value="{{ old('pengarang') }}" />
                         </div>
                         <div class="form-group">
-                            <label for="largeInput">Penerbit</label>
-                            <input type="text" class="form-control form-control" id="defaultInput"
-                                placeholder="Masukan Penerbit" />
+                            <label>Penerbit</label>
+                            <input type="text" class="form-control form-control" name="penerbit"
+                                value="{{ old('penerbit') }}" />
                         </div>
                         <div class=" d-flex">
                             <div class="form-group">
-                                <label for="largeInput">Tahun terbit</label>
-                                <input type="number" class="form-control form-control" id="defaultInput"
-                                    placeholder="Masukan tahun terbit" />
+                                <label>Tahun terbit</label>
+                                <input type="number" class="form-control form-control" name="tahun_terbit"
+                                    value="{{ old('tahun_terbit') }}" />
                             </div>
                             <div class="form-group">
-                                <label for="largeInput">Stok</label>
-                                <input type="number" class="form-control form-control" id="defaultInput"
-                                    placeholder="Masukan stokt" />
+                                <label>Stok</label>
+                                <input type="number" class="form-control form-control" name="stok"
+                                    value="{{ old('stok') }}" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="comment">Daftar isi</label>
-                            <textarea class="form-control" id="comment" rows="5">
-                            </textarea>
+                            <label>kondisi buku</label>
+                            <select class="form-select form-control" name="kondisi">
+                                <option value="">-Pilih-</option>
+                                <option value="baik" {{ old('kondisi') == 'aktif' ? 'selected' : '' }}>Baik</option>
+                                <option value="rusak" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Rusak
+                                </option>
+                                <option value="hilang" {{ old('kondisi') == 'hilang' ? 'selected' : '' }}>Hilang</option>
+                            </select>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" style="border-radius: 15px;">Tambah</button>
-                    </div>
+                        <div class="form-group">
+                            <label for="comment">Daftar isi</label>
+                            <textarea class="form-control" id="comment" rows="5" name="daftar_isi" value="{{ old('daftar_isi') }}"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Tambah</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    @endsection
+    </div>
+
+
+
+    {{-- modal edit --}}
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editModalLabel">Edit</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group">
+                            <label for="exampleFormControlFile1">Silahkan masukan gambar buku</label>
+                            <br>
+                            <input type="file" class="form-control-file" id="editGambar" name="gambar_buku"
+                                value="{{ old('gambar_buku') }}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Kategori</label>
+                            <select class="form-select form-control" name="kategori_id" id="editKategori">
+                                <option value="">-Pilih-</option>
+                                <option value="aktif" {{ old('kategori_id') == 'aktif' ? 'selected' : '' }}>a</option>
+                                <option value="nonaktif" {{ old('kategori_id') == 'nonaktif' ? 'selected' : '' }}>b
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Judul buku</label>
+                            <input type="text" class="form-control form-control" name="judul_buku" id="editJudul" />
+                        </div>
+                        <div class="form-group">
+                            <label>Pengarang</label>
+                            <input type="text" class="form-control form-control" name="pengarang" id="editPengarang" />
+                        </div>
+                        <div class="form-group">
+                            <label>Penerbit</label>
+                            <input type="text" class="form-control form-control" name="penerbit" id="editPenerbit" />
+                        </div>
+                        <div class=" d-flex">
+                            <div class="form-group">
+                                <label>Tahun terbit</label>
+                                <input type="number" class="form-control form-control" name="tahun_terbit" id="editTahunTerbit" />
+                            </div>
+                            <div class="form-group">
+                                <label>Stok</label>
+                                <input type="number" class="form-control form-control" name="stok" id="editStok"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>kondisi buku</label>
+                            <select class="form-select form-control" name="kondisi" id="editKondisi">
+                                <option value="">-Pilih-</option>
+                                <option value="baik" {{ old('kondisi') == 'aktif' ? 'selected' : '' }}>Baik</option>
+                                <option value="rusak" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Rusak
+                                </option>
+                                <option value="hilang" {{ old('kondisi') == 'hilang' ? 'selected' : '' }}>Hilang</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Daftar isi</label>
+                            <textarea class="form-control" rows="5" name="daftar_isi" id="editDaftarIsi"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- modal confirm delete --}}
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteModalLabel">Konfirmasi Hapus</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus kategori ini?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if ($errors->any())
+                var addModal = new bootstrap.Modal(document.getElementById('addModal'), {});
+                addModal.show();
+            @endif
+
+            $('#editModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var id = button.data('id'); // Extract info from data-* attributes
+                var modal = $(this);
+
+                $.ajax({
+                    url: '/buku/' + id + '/edit',
+                    method: 'GET',
+                    success: function(data) {
+                        console.log(data);
+                        // modal.find('#editGambar').val(data.gambar_buku);
+                        modal.find('#editKategori').val(data.kategori_id);
+                        modal.find('#editJudul').val(data.judul_buku);
+                        modal.find('#editPengarang').val(data.pengarang);
+                        modal.find('#editPenerbit').val(data.penerbit);
+                        modal.find('#editTahunTerbit').val(data.tahun_terbit);
+                        modal.find('#editStok').val(data.stok);
+                        modal.find('#editKondisi').val(data.kondisi);
+                        modal.find('#editDaftarIsi').val(data.daftar_isi); 
+                        modal.find('#editForm').attr('action', '/buku/' + id + '/update');
+                    }
+                });
+            });
+
+            // Delete functionality
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            var bukuIdToDelete;
+
+            $('.btn-delete').click(function() {
+                bukuIdToDelete = $(this).data('id');
+                deleteModal.show();
+            });
+
+            $('#confirmDelete').click(function() {
+                $.ajax({
+                    url: '/buku/' + bukuIdToDelete,
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Terjadi kesalahan: ' + xhr.responseJSON.message);
+                    }
+                });
+            });
+        });
+    </script>
+@endsection

@@ -37,19 +37,23 @@
                                     <tbody>
                                         @foreach ($kategoris as $item)
                                             <tr>
-                                                <td>{{ $item->id }}</td>
+                                                <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $item->nama }}</td>
                                                 <td>{{ $item->status }}</td>
                                                 <td>
-                                                  <div class="form-button-action">
-                                                    <button type="button" data-id="{{ $item->id }}" data-bs-toggle="modal"
-                                                        data-bs-target="#editModal" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task">
-                                                        <i class="fa fa-edit"></i>
-                                                    </button>
-                                                    <button type="button" data-id="{{ $item->id }}" class="btn btn-link btn-danger btn-delete" data-original-title="Remove">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
-                                                </div>
+                                                    <div class="form-button-action">
+                                                        <button type="button" data-id="{{ $item->id }}"
+                                                            data-bs-toggle="modal" data-bs-target="#editModal"
+                                                            class="btn btn-link btn-primary btn-lg"
+                                                            data-original-title="Edit Task">
+                                                            <i class="fa fa-edit"></i>
+                                                        </button>
+                                                        <button type="button" data-id="{{ $item->id }}"
+                                                            class="btn btn-link btn-danger btn-delete"
+                                                            data-original-title="Remove">
+                                                            <i class="fa fa-times"></i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -117,110 +121,110 @@
     </div>
 
     {{-- modal edit --}}
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="editModalLabel">Edit</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editForm" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="_method" value="POST">
-                    <div class="form-group">
-                        <label>Nama Kategori</label>
-                        <input type="text" class="form-control" id="editNama" name="nama" />
-                    </div>
-                    <div class="form-group">
-                        <label>Status</label>
-                        <select class="form-select form-control" id="editStatus" name="status">
-                            <option value="">-Pilih-</option>
-                            <option value="aktif">Aktif</option>
-                            <option value="nonaktif">Nonaktif</option>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Update</button>
-                    </div>
-                </form>
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editModalLabel">Edit</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="_method" value="POST">
+                        <div class="form-group">
+                            <label>Nama Kategori</label>
+                            <input type="text" class="form-control" id="editNama" name="nama" />
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select class="form-select form-control" id="editStatus" name="status">
+                                <option value="">-Pilih-</option>
+                                <option value="aktif">Aktif</option>
+                                <option value="nonaktif">Nonaktif</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Update</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-  </div>
 
-  {{-- modal confirm delete --}}
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h1 class="modal-title fs-5" id="deleteModalLabel">Konfirmasi Hapus</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              <p>Apakah Anda yakin ingin menghapus kategori ini?</p>
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-              <button type="button" class="btn btn-danger" id="confirmDelete">Hapus</button>
-          </div>
-      </div>
-  </div>
-</div>
+    {{-- modal confirm delete --}}
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteModalLabel">Konfirmasi Hapus</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus kategori ini?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('js')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        @if ($errors->any())
-            var addModal = new bootstrap.Modal(document.getElementById('addModal'), {});
-            addModal.show();
-        @endif
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if ($errors->any())
+                var addModal = new bootstrap.Modal(document.getElementById('addModal'), {});
+                addModal.show();
+            @endif
 
-        $('#editModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var id = button.data('id'); // Extract info from data-* attributes
-            var modal = $(this);
+            $('#editModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var id = button.data('id'); // Extract info from data-* attributes
+                var modal = $(this);
 
-            $.ajax({
-                url: '/kategori/' + id + '/edit',
-                method: 'GET',
-                success: function(data) {
-                    modal.find('#editNama').val(data.nama);
-                    modal.find('#editStatus').val(data.status);
-                    modal.find('#editForm').attr('action', '/kategori/' + id + '/update');
-                }
-            });
-        });
-
-        // Delete functionality
-        var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        var categoryIdToDelete;
-
-        $('.btn-delete').click(function () {
-            categoryIdToDelete = $(this).data('id');
-            deleteModal.show();
-        });
-
-        $('#confirmDelete').click(function () {
-            $.ajax({
-                url: '/kategori/' + categoryIdToDelete,
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (response.success) {
-                        location.reload();
-                    } else {
-                        alert(response.message);
+                $.ajax({
+                    url: '/kategori/' + id + '/edit',
+                    method: 'GET',
+                    success: function(data) {
+                        modal.find('#editNama').val(data.nama);
+                        modal.find('#editStatus').val(data.status);
+                        modal.find('#editForm').attr('action', '/kategori/' + id + '/update');
                     }
-                },
-                error: function(xhr) {
-                    alert('Terjadi kesalahan: ' + xhr.responseJSON.message);
-                }
+                });
+            });
+
+            // Delete functionality
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            var categoryIdToDelete;
+
+            $('.btn-delete').click(function() {
+                categoryIdToDelete = $(this).data('id');
+                deleteModal.show();
+            });
+
+            $('#confirmDelete').click(function() {
+                $.ajax({
+                    url: '/kategori/' + categoryIdToDelete,
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Terjadi kesalahan: ' + xhr.responseJSON.message);
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 @endsection

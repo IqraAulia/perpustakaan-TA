@@ -27,32 +27,22 @@ Route::group(['prefix' => 'kategori', 'as' => 'kategori.',], function () {
     Route::delete('/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
 Route::group(['prefix' => 'buku', 'as' => 'buku.',], function () {
     Route::get('/', [BukuController::class, 'index'])->name('index');
-    Route::get('/detail', [BukuController::class, 'detail'])->name('detail');
     Route::post('/store', [BukuController::class, 'store'])->name('store');
-    Route::post('/update', [BukuController::class, 'update'])->name('update');
-    Route::delete('/destroy', [BukuController::class, 'destroy'])->name('destroy');
+    Route::get('/{id}/edit', [BukuController::class, 'edit'])->name('edit');
+    Route::post('/{id}/update', [BukuController::class, 'update'])->name('update');
+    Route::delete('/{id}', [BukuController::class, 'destroy'])->name('kategori.destroy');
 });
+
 
 
 Route::group(['prefix' => 'user', 'as' => 'user.',], function () {
     Route::get('/', [UserController::class, 'index'])->name('index');
     Route::post('/store', [UserController::class, 'store'])->name('store');
-    Route::post('/update', [UserController::class, 'update'])->name('update');
-    Route::delete('/destroy', [UserController::class, 'destroy'])->name('destroy');
+    Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit');
+    Route::post('/{id}/update', [UserController::class, 'update'])->name('update');
+    Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
 });
 
 Route::group(['prefix' => 'anggota', 'as' => 'anggota.',], function () {
