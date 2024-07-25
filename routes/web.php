@@ -48,8 +48,9 @@ Route::group(['prefix' => 'user', 'as' => 'user.',], function () {
 Route::group(['prefix' => 'anggota', 'as' => 'anggota.',], function () {
     Route::get('/', [AnggotaController::class, 'index'])->name('index');
     Route::post('/store', [AnggotaController::class, 'store'])->name('store');
-    Route::post('/update', [AnggotaController::class, 'update'])->name('update');
-    Route::delete('/destroy', [AnggotaController::class, 'destroy'])->name('destroy');
+    Route::get('/{id}/edit', [AnggotaController::class, 'edit'])->name('edit');
+    Route::post('/{id}/update', [AnggotaController::class, 'update'])->name('update');
+    Route::delete('/{id}', [AnggotaController::class, 'destroy'])->name('destroy');
 });
 
 Route::group(['prefix' => 'peminjaman', 'as' => 'peminjaman.',], function () {

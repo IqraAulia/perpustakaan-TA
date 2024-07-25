@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('anggotas', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('role')->nullable();
+            $table->string('status')->nullable();
             $table->string('nim');
             $table->string('email');
             $table->timestamp('email_verified_at')->nullable();
