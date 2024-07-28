@@ -11,24 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('anggotas', function (Blueprint $table) {
+        Schema::create('peminjaman', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id');
-            $table->string('nama_lengkap');
-            $table->string('nomor_induk');
-            $table->string('alamat');
-            $table->string('noHp');
-            $table->timestamp('email_verified_at')->nullable();
-            $table->rememberToken();
+            $table->foreignId('created_by');
+            $table->foreignId('user_id');
+            $table->foreignId('denda_id');
+            $table->date('tgl_pinjam');
+            $table->date('tgl_kembali');
+            $table->date('tgl_kembalikan')->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('anggotas');
+        Schema::dropIfExists('peminjaman');
     }
 };

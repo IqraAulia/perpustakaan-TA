@@ -233,9 +233,6 @@
                     }
                 });
             });
-          
-
-
             // Delete functionality
             var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
             var userIdToDelete;

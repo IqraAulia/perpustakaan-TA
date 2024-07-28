@@ -15,14 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('gambar_buku');
             $table->string('judul_buku');
-            $table->string('daftar_isi');
-            $table->string('kategori_id');
-            $table->string('pengarang');
-            $table->string('penerbit');
+            $table->text('daftar_isi')->nullable();
+            $table->foreignId('kategori_id');
+            $table->foreignId('pengarang_id');
+            $table->foreignId('penerbit_id');
             $table->string('tahun_terbit');
-            $table->string('stok');
-            $table->string('status');
-            $table->string('kondisi');
+            $table->integer('stok');
+            $table->enum('status', ['tersedia', 'kosong', 'diajukan']);
             $table->timestamps();
         });
     }
