@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Buku;
 use App\Models\Kategori;
+use App\Models\Penerbit;
+use App\Models\Pengarang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
@@ -13,8 +15,26 @@ class BukuController extends Controller
 {
     public function index()
     {
+        $bukus = Buku::selectRaw("
+                    bukus.*,
+                    kategoris.nama as kategori,
+                    pengarangs.nama as pengarang,
+                    penerbits.nama as penerbit
+                ")
+            ->join('kategoris', 'bukus.kategori_id', 'kategoris.id')
+            ->join('pengarangs', 'bukus.pengarang_id', 'pengarangs.id')
+            ->join('penerbits', 'bukus.penerbit_id', 'penerbits.id')
+            ->get();
+
+        $kategori = Kategori::get();
+        $pengarang = Pengarang::get();
+        $penerbit = Penerbit::get();
+
         return view('page.buku.index', [
-            'bukus' => Buku::all(),
+            'bukus' => $bukus,
+            'kategori' => $kategori,
+            'pengarang' => $pengarang,
+            'penerbit' => $penerbit,
         ]);
     }
     public function store(Request $request)
@@ -25,12 +45,13 @@ class BukuController extends Controller
             'judul_buku' => 'required',
             'daftar_isi' => 'required',
             'kategori_id' => 'required',
-            'pengarang' => 'required',
-            'penerbit' => 'required',
+            'pengarang_id' => 'required',
+            'penerbit_id' => 'required',
             'tahun_terbit' => 'required',
             'stok' => 'required',
-            'kondisi' => 'required',
+            'status' => 'required',
         ]);
+
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -52,13 +73,13 @@ class BukuController extends Controller
                 'judul_buku' => $request->judul_buku,
                 'daftar_isi' => $request->daftar_isi,
                 'kategori_id' => $request->kategori_id,
-                'pengarang' => $request->pengarang,
-                'penerbit' => $request->penerbit,
+                'pengarang_id' => $request->pengarang_id,
+                'penerbit_id' => $request->penerbit_id,
                 'tahun_terbit' => $request->tahun_terbit,
                 'stok' => $request->stok,
-                'status' => 'aktif',
-                'kondisi' => $request->kondisi,
+                'status' => $request->status,
             ]);
+
 
             DB::commit();
             return redirect()->route('buku.index')->with('success', 'Berhasil menambah data');
@@ -84,12 +105,13 @@ class BukuController extends Controller
             'judul_buku' => 'required',
             'daftar_isi' => 'required',
             'kategori_id' => 'required',
-            'pengarang' => 'required',
-            'penerbit' => 'required',
+            'pengarang_id' => 'required',
+            'penerbit_id' => 'required',
             'tahun_terbit' => 'required',
             'stok' => 'required',
-            'kondisi' => 'required',
+            'status' => 'required',
         ]);
+
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -111,12 +133,11 @@ class BukuController extends Controller
                 'judul_buku' => $request->judul_buku,
                 'daftar_isi' => $request->daftar_isi,
                 'kategori_id' => $request->kategori_id,
-                'pengarang' => $request->pengarang,
-                'penerbit' => $request->penerbit,
+                'pengarang_id' => $request->pengarang_id,
+                'penerbit_id' => $request->penerbit_id,
                 'tahun_terbit' => $request->tahun_terbit,
                 'stok' => $request->stok,
-                'status' => 'aktif',
-                'kondisi' => $request->kondisi,
+                'status' => $request->status,
             ]);
 
             DB::commit();

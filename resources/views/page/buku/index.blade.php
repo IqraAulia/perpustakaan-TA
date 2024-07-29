@@ -41,7 +41,7 @@
                                         @foreach ($bukus as $item)
                                             <tr>
                                                 <td>{{ $item->id }}</td>
-                                                <td>{{ $item->kategori_id }}</td>
+                                                <td>{{ $item->kategori }}</td>
                                                 <td>{{ $item->judul_buku }}</td>
                                                 <td>{{ $item->stok }}</td>
                                                 <td>{{ $item->status }}</td>
@@ -129,25 +129,33 @@
                             <label>Kategori</label>
                             <select class="form-select form-control" name="kategori_id">
                                 <option value="">-Pilih-</option>
-                                <option value="aktif" {{ old('kategori_id') == 'aktif' ? 'selected' : '' }}>a</option>
-                                <option value="nonaktif" {{ old('kategori_id') == 'nonaktif' ? 'selected' : '' }}>b
-                                </option>
+                                @foreach ($kategori as $kat)
+                                <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group">    
                             <label>Judul buku</label>
                             <input type="text" class="form-control form-control" name="judul_buku"
                                 value="{{ old('judul_buku') }}" />
                         </div>
                         <div class="form-group">
                             <label>Pengarang</label>
-                            <input type="text" class="form-control form-control" name="pengarang"
-                                value="{{ old('pengarang') }}" />
+                            <select class="form-select form-control" name="pengarang_id">
+                                <option value="">-Pilih-</option>
+                                @foreach ($pengarang as $pengarang)
+                                <option value="{{ $pengarang->id }}">{{ $pengarang->nama }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Penerbit</label>
-                            <input type="text" class="form-control form-control" name="penerbit"
-                                value="{{ old('penerbit') }}" />
+                            <select class="form-select form-control" name="penerbit_id">
+                                <option value="">-Pilih-</option>
+                                @foreach ($penerbit as $penerbit)
+                                <option value="{{ $penerbit->id }}">{{ $penerbit->nama }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class=" d-flex">
                             <div class="form-group">
@@ -162,13 +170,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>kondisi buku</label>
-                            <select class="form-select form-control" name="kondisi">
+                            <label>Status</label>
+                            <select class="form-select form-control" name="status">
                                 <option value="">-Pilih-</option>
-                                <option value="baik" {{ old('kondisi') == 'aktif' ? 'selected' : '' }}>Baik</option>
-                                <option value="rusak" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Rusak
-                                </option>
-                                <option value="hilang" {{ old('kondisi') == 'hilang' ? 'selected' : '' }}>Hilang</option>
+                                <option value="Tersedia"{{ old('status') == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
+                                <option value="Kosong"{{ old('status') == 'Kosong' ? 'selected' : '' }}>Kosong</option>
+                                <option value="Diajukan" {{ old('status') == 'Diajukan' ? 'selected' : '' }}>Diajukan</option>
                             </select>
                         </div>
                         <div class="form-group">

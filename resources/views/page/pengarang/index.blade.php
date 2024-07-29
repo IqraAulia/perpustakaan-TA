@@ -7,7 +7,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center">
-                                <h4 class="card-title">List Anggota</h4>
+                                <h4 class="card-title">List Pengarang</h4>
                                 <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal"
                                     data-bs-target="#addModal">
                                     <i class="fa fa-plus"></i>
@@ -15,30 +15,33 @@
                                 </button>
                             </div>
                             <div class="h6" id="datetime"></div>
+                            <div>
+                                @if (session('success'))
+                                    <div class="alert alert-success">
+                                        {{ session('success') }}
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="basic-datatables" class=" datatables display table table-striped table-hover">
                                     <thead>
                                         <tr>
-                                            <th>No</th>
-                                            <th>NIP</th>
-                                            <th>Nama</th>
-                                            <th>Role</th>
-                                            <th>Alamat</th>
-                                            <th>No HP</th>
+                                            <th>NO</th>
+                                            <th>Nama pengarang</th>
+                                            <th>tanggal lahir</th>
+                                            <th>alamat</th>
                                             <th>aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($anggotas as $item)
+                                        @foreach ($pengarang as $item)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $item->nomor_induk }}</td>
-                                                <td>{{ $item->nama_lengkap }}</td>
-                                                <td>{{ $item->role }}</td>
+                                                <td>{{ $item->nama }}</td>
+                                                <td>{{ $item->tgl_lahir }}</td>
                                                 <td>{{ $item->alamat }}</td>
-                                                <td>{{ $item->noHp }}</td>
                                                 <td>
                                                     <div class="form-button-action">
                                                         <button type="button" data-id="{{ $item->id }}"
@@ -66,7 +69,7 @@
         </div>
     </div>
 
-    {{-- add modal --}}
+    {{-- modal --}}
     <div class="modal fade @if ($errors->any()) show @endif" id="addModal" tabindex="-1"
         aria-labelledby="exampleModalLabel" aria-hidden="true"
         @if ($errors->any()) style="display:block;" @endif>
@@ -91,37 +94,24 @@
                             </ul>
                         </div>
                     @endif
-                    <form action="{{ route('anggota.store') }}" method="POST" enctype="multipart/form-data" id="addForm">
+                    <form action="{{ route('pengarang.store') }}" method="POST" enctype="multipart/form-data"
+                        id="addForm">
                         @csrf
                         <div class="gambar">
                             <div class="form-group">
-                                <label>Nama</label>
-                                <input type="text" class="form-control form-control" name="nama_lengkap" placeholder=""
-                                    value="{{ old('nama_lengkap') }}" />
+                                <label>Nama pengarang</label>
+                                <input type="text" class="form-control form-control" name="nama" placeholder=""
+                                    value="{{ old('nama') }}" />
                             </div>
                             <div class="form-group">
-                                <label>NIP</label>
-                                <input type="text" class="form-control form-control" name="nomor_induk" placeholder=""
-                                    value="{{ old('nomor_induk') }}" />
+                                <label>Tanggal lahir</label>
+                                <input type="date" class="form-control form-control" name="tgl_lahir" placeholder=""
+                                    value="{{ old('tgl_lahir') }}" />
                             </div>
                             <div class="form-group">
                                 <label>Alamat</label>
                                 <input type="text" class="form-control form-control" name="alamat" placeholder=""
                                     value="{{ old('alamat') }}" />
-                            </div>
-                            <div class="form-group">
-                                <label>No Hp</label>
-                                <input type="text" class="form-control form-control" name="noHp" placeholder=""
-                                    value="{{ old('noHp') }}" />
-                            </div>
-                            <div class="form-group">
-                                <label>Role</label>
-                                <select class="form-select form-control" name="user_id">
-                                    <option value="">-Pilih-</option>
-                                    @foreach ($user as $user)
-                                    <option value="{{ $user->id }}">{{ $user->role }}</option>
-                                    @endforeach
-                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -144,38 +134,18 @@
                 <div class="modal-body">
                     <form id="editForm" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <div class="gambar">
-                            <div class="form-group">
-                                <label>Nama</label>
-                                <input type="text" class="form-control form-control" name="name" placeholder=""
-                                    id="editName" value="{{ old('name') }}" />
-                            </div>
-                            <div class="form-group">
-                                <label>Status</label>
-                                <select class="form-select form-control" name="status"
-                                    id="editStatus">
-                                    <option value="xs">-Pilih-</option>
-                                    <option value="Setuju" {{ old('status') == 'setuju' ? 'selected' : '' }}>Setuju
-                                    </option>
-                                    <option value="Diajukan" {{ old('status') == 'diajukan' ? 'selected' : '' }}>
-                                        Diajukan</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>NIP</label>
-                                <input type="text" class="form-control form-control" name="nim" placeholder=""
-                                    id="editNim" value="{{ old('nim') }}" />
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" class="form-control form-control" name="email" placeholder=""
-                                    id="editEmail" value="{{ old('email') }}" />
-                            </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="text" class="form-control form-control" name="password" placeholder=""
-                                    id="editPassword" value="{{ old('password') }}" />
-                            </div>
+                        <input type="hidden" name="_method" value="POST">
+                        <div class="form-group">
+                            <label>Nama</label>
+                            <input type="text" class="form-control" id="editNama" name="nama" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal lahir</label>
+                            <input type="date" class="form-control" id="editTgl_lahir" name="nama" />
+                        </div>
+                        <div class="form-group">
+                            <label>Alamat</label>
+                            <input type="text" class="form-control" id="editAlamat" name="nama" />
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Update</button>
@@ -195,7 +165,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Apakah Anda yakin ingin menghapus kategori ini?</p>
+                    <p>Apakah Anda yakin ingin menghapus data ini?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -220,32 +190,29 @@
                 var modal = $(this);
 
                 $.ajax({
-                    url: '/anggota/' + id + '/edit',
+                    url: '/pengarang/' + id + '/edit',
                     method: 'GET',
                     success: function(data) {
-                        console.log(data);
-                        // modal.find('#editGambar').val(data.gambar_buku);
-                        modal.find('#editName').val(data.name);
-                        modal.find('#editStatus').val(data.status);
-                        modal.find('#editNim').val(data.nim);
-                        modal.find('#editEmail').val(data.email);
-                        modal.find('#editPassword').val(data.tahun_terbit);
-                        modal.find('#editForm').attr('action', '/anggota/' + id + '/update');
+                        modal.find('#editNama').val(data.nama);
+                        modal.find('#editTgl_lahir').val(data.tgl_lahir);
+                        modal.find('#editAlamat').val(data.alamat);
+                        modal.find('#editForm').attr('action', '/pengarang/' + id + '/update');
                     }
                 });
             });
+
             // Delete functionality
             var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            var userIdToDelete;
+            var categoryIdToDelete;
 
             $('.btn-delete').click(function() {
-                userIdToDelete = $(this).data('id');
+                categoryIdToDelete = $(this).data('id');
                 deleteModal.show();
             });
 
             $('#confirmDelete').click(function() {
                 $.ajax({
-                    url: '/anggota/' + userIdToDelete,
+                    url: '/pengarang/' + categoryIdToDelete,
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'

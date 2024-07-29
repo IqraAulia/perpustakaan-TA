@@ -2,39 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Anggota;
-use App\Models\User;
+use App\Models\Penerbit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class AnggotaController extends Controller
+class PenerbitController extends Controller
 {
     public function index()
     {
-        $anggotas = Anggota::selectRaw("
-                    anggotas.*,
-                    users.role as role
-                    ")
-            ->join('users', 'anggotas.user_id', 'users.id')
-            ->get();
-        
-        $user = User::get();
-
-        return view('page.anggota.index', [
-            'anggotas' => $anggotas,
-            'user' => $user,
+        return view('page.penerbit.index', [
+            'penerbit' => Penerbit::all(),
         ]);
     }
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'nama_lengkap' => 'required',
-            'nomor_induk' => 'required',
+            'nama' => 'required',
             'alamat' => 'required',
-            'noHp' => 'required',
         ]);
+
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
@@ -44,16 +31,13 @@ class AnggotaController extends Controller
         try {
             DB::beginTransaction();
 
-            Anggota::create([
-                'user_id' => $request->user_id,
-                'nama_lengkap' => $request->nama_lengkap,
-                'nomor_induk' => $request->nomor_induk,
+            Penerbit::create([
+                'nama' => $request->nama,
                 'alamat' => $request->alamat,
-                'noHp' => $request->noHp,
             ]);
 
             DB::commit();
-            return redirect()->route('anggota.index')->with('success', 'Berhasil menambah data');
+            return redirect()->route('penerbit.index')->with('success', 'Berhasil menambah data');
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()
@@ -64,18 +48,15 @@ class AnggotaController extends Controller
 
     public function edit($id)
     {
-        $user = Anggota::findOrFail($id);
-        return response()->json($user);
+        $penerbit = Penerbit::findOrFail($id);
+        return response()->json($penerbit);
     }
 
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'nama_lengkap' => 'required',
-            'nomor_induk' => 'required',
+            'nama' => 'required',
             'alamat' => 'required',
-            'noHp' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -87,18 +68,14 @@ class AnggotaController extends Controller
         try {
             DB::beginTransaction();
 
-
-            $user = Anggota::findOrFail($id);
-            $user->update([
-                'user_id' => $request->user_id,
-                'nama_lengkap' => $request->nama_lengkap,
-                'nomor_induk' => $request->nomor_induk,
+            $penerbit = Penerbit::findOrFail($id);
+            $penerbit->update([
+                'nama' => $request->nama,
                 'alamat' => $request->alamat,
-                'noHp' => $request->noHp,
             ]);
 
             DB::commit();
-            return redirect()->route('anggota.index')->with('success', 'Berhasil memperbarui data');
+            return redirect()->route('penerbit.index')->with('success', 'Berhasil memperbarui data');
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()
@@ -107,12 +84,11 @@ class AnggotaController extends Controller
         }
     }
 
-
     public function destroy($id)
     {
         try {
-            $user = Anggota::findOrFail($id);
-            $user->delete();
+            $penerbit = Penerbit::findOrFail($id);
+            $penerbit->delete();
 
             return response()->json([
                 'success' => true,

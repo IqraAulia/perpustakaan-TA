@@ -34,6 +34,18 @@
                         <p>Kategori</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('pengarang.index') }}">
+                        <i class="fas fa-bars"></i>
+                        <p>Pengarang</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('penerbit.index') }}">
+                        <i class="fas fa-bars"></i>
+                        <p>Penerbit</p>
+                    </a>
+                </li>
 
 
 

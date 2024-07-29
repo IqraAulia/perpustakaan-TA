@@ -6,6 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ListBukuController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PenerbitController;
+use App\Http\Controllers\PengarangController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\PinjamController;
 use App\Http\Controllers\ReqBukuController;
@@ -26,6 +28,26 @@ Route::group(['prefix' => 'kategori', 'as' => 'kategori.',], function () {
     Route::post('/{id}/update', [KategoriController::class, 'update'])->name('update');
     Route::delete('/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
 });
+
+Route::group(['prefix' => 'pengarang', 'as' => 'pengarang.',], function () {
+    Route::get('/', [PengarangController::class, 'index'])->name('index');
+    Route::post('/store', [PengarangController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [PengarangController::class, 'edit'])->name('edit');
+    Route::post('/{id}/update', [PengarangController::class, 'update'])->name('update');
+    Route::delete('/{id}', [PengarangController::class, 'destroy'])->name('kategori.destroy');
+});
+
+Route::group(['prefix' => 'penerbit', 'as' => 'penerbit.',], function () {
+    Route::get('/', [PenerbitController::class, 'index'])->name('index');
+    Route::post('/store', [PenerbitController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [PenerbitController::class, 'edit'])->name('edit');
+    Route::post('/{id}/update', [PenerbitController::class, 'update'])->name('update');
+    Route::delete('/{id}', [PenerbitController::class, 'destroy'])->name('kategori.destroy');
+});
+
+
+
+
 
 Route::group(['prefix' => 'buku', 'as' => 'buku.',], function () {
     Route::get('/', [BukuController::class, 'index'])->name('index');

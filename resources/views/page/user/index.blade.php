@@ -31,7 +31,6 @@
                                             <th>No</th>
                                             <th>Nama</th>
                                             <th>Role</th>
-                                            <th>Nip</th>
                                             <th>email</th>
                                             <th>aksi</th>
                                         </tr>
@@ -43,7 +42,6 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $item->name }}</td>
                                                 <td>{{ $item->role }}</td>
-                                                <td>{{ $item->nim }}</td>
                                                 <td>{{ $item->email }}</td>
                                                 <td>
                                                     <div class="form-button-action">

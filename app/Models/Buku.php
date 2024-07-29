@@ -13,12 +13,12 @@ class Buku extends Model
         'judul_buku',
         'daftar_isi',
         'kategori_id',
-        'pengarang',
-        'penerbit',
+        'pengarang_id',
+        'penerbit_id',
         'tahun_terbit',
         'stok',
         'status',
-        'kondisi',
     ];
 }
+
 

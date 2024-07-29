@@ -21,11 +21,12 @@ return new class extends Migration
             $table->foreignId('penerbit_id');
             $table->string('tahun_terbit');
             $table->integer('stok');
-            $table->enum('status', ['tersedia', 'kosong', 'diajukan']);
+            $table->enum('status', ['Tersedia', 'Kosong', 'Diajukan']);
             $table->timestamps();
         });
     }
 
+    
     /**
      * Reverse the migrations.
      */
