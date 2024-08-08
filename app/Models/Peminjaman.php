@@ -8,13 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Peminjaman extends Model
 {
     use HasFactory;
+    protected $table = 'peminjaman';
     protected $fillable = [
+        'created_by',
         'user_id',
-        'kategori_id',
-        'jumlah',
-        'buku_id',
         'tgl_pinjam',
         'tgl_kembali',
-        'kondisi_buku_pinjam',
+        'tgl_kembalikan',
     ];
+
+    public function peminjamanDetail()
+    {
+        return $this->hasMany(PeminjamanDetail::class);
+    }
+    public function buku()
+    {
+        return $this->belongsToMany(Buku::class)->withPivot('quantity');
+    }
 }

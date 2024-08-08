@@ -45,10 +45,6 @@ Route::group(['prefix' => 'penerbit', 'as' => 'penerbit.',], function () {
     Route::delete('/{id}', [PenerbitController::class, 'destroy'])->name('kategori.destroy');
 });
 
-
-
-
-
 Route::group(['prefix' => 'buku', 'as' => 'buku.',], function () {
     Route::get('/', [BukuController::class, 'index'])->name('index');
     Route::post('/store', [BukuController::class, 'store'])->name('store');
@@ -57,6 +53,12 @@ Route::group(['prefix' => 'buku', 'as' => 'buku.',], function () {
     Route::delete('/{id}', [BukuController::class, 'destroy'])->name('kategori.destroy');
 });
 
+Route::group(['prefix' => 'list-buku', 'as' => 'list-buku.',], function () {
+    Route::get('/', [ListBukuController::class, 'index'])->name('index');
+    Route::post('/store', [ListBukuController::class, 'store'])->name('store');
+    Route::post('/update', [ListBukuController::class, 'update'])->name('update');
+    Route::delete('/destroy', [ListBukuController::class, 'destroy'])->name('destroy');
+});
 
 
 Route::group(['prefix' => 'user', 'as' => 'user.',], function () {
@@ -79,7 +81,8 @@ Route::group(['prefix' => 'peminjaman', 'as' => 'peminjaman.',], function () {
     Route::get('/', [PeminjamanController::class, 'index'])->name('index');
     Route::get('/detail', [PeminjamanController::class, 'detail'])->name('detail');
     Route::post('/store', [PeminjamanController::class, 'store'])->name('store');
-    Route::post('/update', [PeminjamanController::class, 'update'])->name('update');
+    Route::get('/{id}/edit', [PeminjamanController::class, 'edit'])->name('edit');
+    Route::post('/{id}/update', [PeminjamanController::class, 'update'])->name('update');
     Route::delete('/destroy', [PeminjamanController::class, 'destroy'])->name('destroy');
 });
 
@@ -99,12 +102,7 @@ Route::group(['prefix' => 'riwayat', 'as' => 'riwayat.',], function () {
     Route::delete('/destroy', [RiwayatController::class, 'destroy'])->name('destroy');
 });
 
-Route::group(['prefix' => 'list-buku', 'as' => 'list-buku.',], function () {
-    Route::get('/', [ListBukuController::class, 'index'])->name('index');
-    Route::post('/store', [ListBukuController::class, 'store'])->name('store');
-    Route::post('/update', [ListBukuController::class, 'update'])->name('update');
-    Route::delete('/destroy', [ListBukuController::class, 'destroy'])->name('destroy');
-});
+
 
 Route::group(['prefix' => 'pinjam', 'as' => 'pinjam.',], function () {
     Route::get('/', [PinjamController::class, 'index'])->name('index');

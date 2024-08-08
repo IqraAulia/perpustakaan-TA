@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('created_by');
+            $table->foreignId('created_by')->nullable();
             $table->foreignId('user_id');
             $table->foreignId('denda_id');
             $table->date('tgl_pinjam');

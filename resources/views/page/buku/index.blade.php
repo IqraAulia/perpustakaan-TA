@@ -7,7 +7,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center">
-                                <h4 class="card-title">List Buku</h4>
+                                <h4 class="card-title">Kelola Buku</h4>
                                 <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal"
                                     data-bs-target="#addModal">
                                     <i class="fa fa-plus"></i>
@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    {{-- modal --}}
+    {{-- Add Modal --}}
     <div class="modal fade @if ($errors->any()) show @endif" id="addModal" tabindex="-1"
         aria-labelledby="exampleModalLabel" aria-hidden="true"
         @if ($errors->any()) style="display:block;" @endif>
@@ -109,22 +109,6 @@
                             <input type="file" class="form-control-file" id="exampleFormControlFile1" name="gambar_buku"
                                 value="{{ old('gambar_buku') }}" />
                         </div>
-                        {{-- <div class="d-flex justify-content-start gap-2 form-group">
-                            <div class="avatar-xxl">
-                                <img src="{{ asset('kaiadmin-lite-1.0.0/assets/img/mentahan.jpg') }}" alt="..."
-                                    class="avatar-img rounded">
-                            </div>
-                            <div class="p-1 ">
-                                <div class="mt-3 mb-3">
-                                    <button class="border border-primary "
-                                        style="background-color: #ECF4FF; color:#1572e8; border-radius:15px; padding-bottom:5px; padding-top:5px; padding-right: 20px; padding-left:20px ">Upload</button>
-                                </div>
-                                <div class="" style="padding-right: ">
-                                    <button class="border border-danger"
-                                        style="background-color: #FFECEC; color:#e81515; border-radius:15px; padding-bottom:5px; padding-top:5px; padding-right: 25px; padding-left:25px ">Batal</button>
-                                </div>
-                            </div>
-                        </div> --}}
                         <div class="form-group">
                             <label>Kategori</label>
                             <select class="form-select form-control" name="kategori_id">
@@ -143,8 +127,8 @@
                             <label>Pengarang</label>
                             <select class="form-select form-control" name="pengarang_id">
                                 <option value="">-Pilih-</option>
-                                @foreach ($pengarang as $pengarang)
-                                <option value="{{ $pengarang->id }}">{{ $pengarang->nama }}</option>
+                                @foreach ($pengarang as $png)
+                                <option value="{{ $png->id }}">{{ $png->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -152,8 +136,8 @@
                             <label>Penerbit</label>
                             <select class="form-select form-control" name="penerbit_id">
                                 <option value="">-Pilih-</option>
-                                @foreach ($penerbit as $penerbit)
-                                <option value="{{ $penerbit->id }}">{{ $penerbit->nama }}</option>
+                                @foreach ($penerbit as $pnb)
+                                <option value="{{ $pnb->id }}">{{ $pnb->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -191,9 +175,7 @@
         </div>
     </div>
 
-
-
-    {{-- modal edit --}}
+    {{-- Edit Modal --}}
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -214,75 +196,69 @@
                             <label>Kategori</label>
                             <select class="form-select form-control" name="kategori_id" id="editKategori">
                                 <option value="">-Pilih-</option>
-                                <option value="aktif" {{ old('kategori_id') == 'aktif' ? 'selected' : '' }}>a</option>
-                                <option value="nonaktif" {{ old('kategori_id') == 'nonaktif' ? 'selected' : '' }}>b
-                                </option>
+                                @foreach ($kategori as $kat)
+                                <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Judul buku</label>
-                            <input type="text" class="form-control form-control" name="judul_buku" id="editJudul" />
+                            <input type="text" class="form-control form-control" id="editJudul" name="judul_buku"
+                                value="{{ old('judul_buku') }}" />
                         </div>
                         <div class="form-group">
                             <label>Pengarang</label>
-                            <input type="text" class="form-control form-control" name="pengarang" id="editPengarang" />
+                            <select class="form-select form-control" name="pengarang_id" id="editPengarang">
+                                <option value="">-Pilih-</option>
+                                @foreach ($pengarang as $png)
+                                <option value="{{ $png->id }}">{{ $png->nama }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Penerbit</label>
-                            <input type="text" class="form-control form-control" name="penerbit" id="editPenerbit" />
+                            <select class="form-select form-control" name="penerbit_id" id="editPenerbit">
+                                <option value="">-Pilih-</option>
+                                @foreach ($penerbit as $pnb)
+                                <option value="{{ $pnb->id }}">{{ $pnb->nama }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class=" d-flex">
                             <div class="form-group">
                                 <label>Tahun terbit</label>
-                                <input type="number" class="form-control form-control" name="tahun_terbit" id="editTahunTerbit" />
+                                <input type="number" class="form-control form-control" id="editTahunTerbit"
+                                    name="tahun_terbit" value="{{ old('tahun_terbit') }}" />
                             </div>
                             <div class="form-group">
                                 <label>Stok</label>
-                                <input type="number" class="form-control form-control" name="stok" id="editStok"/>
+                                <input type="number" class="form-control form-control" id="editStok" name="stok"
+                                    value="{{ old('stok') }}" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>kondisi buku</label>
-                            <select class="form-select form-control" name="kondisi" id="editKondisi">
+                            <label>Status</label>
+                            <select class="form-select form-control" name="status" id="editStatus">
                                 <option value="">-Pilih-</option>
-                                <option value="baik" {{ old('kondisi') == 'aktif' ? 'selected' : '' }}>Baik</option>
-                                <option value="rusak" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Rusak
-                                </option>
-                                <option value="hilang" {{ old('kondisi') == 'hilang' ? 'selected' : '' }}>Hilang</option>
+                                <option value="Tersedia"{{ old('status') == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
+                                <option value="Kosong"{{ old('status') == 'Kosong' ? 'selected' : '' }}>Kosong</option>
+                                <option value="Diajukan" {{ old('status') == 'Diajukan' ? 'selected' : '' }}>Diajukan</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Daftar isi</label>
-                            <textarea class="form-control" rows="5" name="daftar_isi" id="editDaftarIsi"></textarea>
+                            <label for="comment">Daftar isi</label>
+                            <textarea class="form-control" id="editDaftarIsi" rows="5" name="daftar_isi" value="{{ old('daftar_isi') }}"></textarea>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Update</button>
+                            <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Simpan</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-    {{-- modal confirm delete --}}
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="deleteModalLabel">Konfirmasi Hapus</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah Anda yakin ingin menghapus kategori ini?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-danger" id="confirmDelete">Hapus</button>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
+
 
 @section('js')
     <script>
@@ -301,15 +277,14 @@
                     url: '/buku/' + id + '/edit',
                     method: 'GET',
                     success: function(data) {
-                        console.log(data);
-                        // modal.find('#editGambar').val(data.gambar_buku);
+                        console.log(data.kategori_id);
                         modal.find('#editKategori').val(data.kategori_id);
                         modal.find('#editJudul').val(data.judul_buku);
                         modal.find('#editPengarang').val(data.pengarang);
                         modal.find('#editPenerbit').val(data.penerbit);
                         modal.find('#editTahunTerbit').val(data.tahun_terbit);
                         modal.find('#editStok').val(data.stok);
-                        modal.find('#editKondisi').val(data.kondisi);
+                        modal.find('#editStatus').val(data.status);
                         modal.find('#editDaftarIsi').val(data.daftar_isi); 
                         modal.find('#editForm').attr('action', '/buku/' + id + '/update');
                     }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('bukus', function (Blueprint $table) {
             $table->id();
-            $table->string('gambar_buku');
+            $table->string('gambar_buku')->nullable();
             $table->string('judul_buku');
             $table->text('daftar_isi')->nullable();
             $table->foreignId('kategori_id');

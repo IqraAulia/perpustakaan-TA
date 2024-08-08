@@ -29,21 +29,31 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Nama</th>
-                                            <th>Role</th>
-                                            <th>Jumlah Buku</th>
+                                            <th>Nama Petugas</th>
+                                            <th>Sebagai</th>
+                                            <th>Nama peminjaman</th>
+                                            <th>role</th>
+                                            <th>Tanggal pinjam</th>
+                                            <th>tanggal kembali</th>
                                             <th>detail</th>
                                             <th>aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($peminjamen as $item)
+                                        @foreach ($peminjaman as $item)
                                             <tr>
                                                 <td>{{$loop->iteration}}</td>
                                                 <td>{{$item->name}}</td>
                                                 <td>{{$item->role}}</td>
-                                                <td>{{$item->jumlah}}</td>
-                                                <td>{{$item->judul_buku}}</td>
+                                                <td>{{$item->name}}</td>
+                                                <td>{{$item->role}}</td>
+                                                <td>{{$item->tgl_pinjam}}</td>
+                                                <td>{{$item->tgl_kembali}}</td>
+                                                <td>
+                                                    <a href="#">
+                                                        <i class="fas fa-info-circle" style="color: #1572E8"></i>
+                                                    </a>
+                                                </td>
                                                 <td>
                                                     <div class="form-button-action">
                                                         <button type="button" data-id="{{ $item->id }}"
@@ -75,7 +85,7 @@
     <div class="modal fade @if ($errors->any()) show @endif" id="addModal" tabindex="-1"
         aria-labelledby="exampleModalLabel" aria-hidden="true"
         @if ($errors->any()) style="display:block;" @endif>
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah</h1>
@@ -96,29 +106,72 @@
                             </ul>
                         </div>
                     @endif
-                    <form action="{{ route('kategori.store') }}" method="POST" enctype="multipart/form-data"
-                        id="addForm">
+                    <form action="{{ route('peminjaman.store') }}" method="POST" enctype="multipart/form-data" id="addForm">
                         @csrf
-                        <div class="gambar">
-                            <div class="form-group">
-                                <label>Nama Kategori</label>
-                                <input type="text" class="form-control form-control" name="nama" placeholder=""
-                                    value="{{ old('nama') }}" />
+                        <div class="form-group">
+                            <label>Nama Petugas</label>
+                            <select class="form-select form-control" name="created_by">
+                                <option value="">-Pilih-</option>
+                                @foreach ($petugas as $petuga)
+                                <option value="{{ $petuga->id }}">{{ $petuga->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nama Peminjam</label>
+                            <select class="form-select form-control" name="user_id">
+                                <option value="">-Pilih-</option>
+                                @foreach ($peminjam as $pinjam)
+                                <option value="{{ $pinjam->id }}">{{ $pinjam->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">    
+                                    <label>Tanggal Pinjam</label>
+                                    <input type="date" class="form-control" name="tgl_pinjam" value="{{ old('tgl_pinjam', $tglPinjam) }}" />
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Status</label>
-                                <select class="form-select form-control" name="status">
-                                    <option value="">-Pilih-</option>
-                                    <option value="aktif" {{ old('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                                    <option value="nonaktif" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif
-                                    </option>
-                                </select>
+                            <div class="col-md-6">
+                                <div class="form-group">    
+                                    <label>Tanggal Kembali</label>
+                                    <input type="date" class="form-control" name="tgl_kembali" value="{{ old('tgl_kembali', $tglKembali) }}" />
+                                </div>
                             </div>
                         </div>
+                        <hr>
+                        <div id="buku-items">
+                            <div class="row buku-item">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Nama Buku</label>
+                                        <select class="form-select form-control" name="buku_id[]">
+                                            <option value="">-Pilih-</option>
+                                            @foreach ($bukus as $buku)
+                                            <option value="{{ $buku->id }}">{{ $buku->judul_buku }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Jumlah</label>
+                                        <input type="number" class="form-control" name="quantity[]" min="1" value="1" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="button" class="btn btn-danger remove-buku-item">Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="add-buku-item" class="btn btn-secondary">Tambah Buku</button>
+                        <hr>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Tambah</button>
                         </div>
                     </form>
+                    
                 </div>
             </div>
         </div>
@@ -126,7 +179,7 @@
 
     {{-- modal edit --}}
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="editModalLabel">Edit</h1>
@@ -137,17 +190,64 @@
                         @csrf
                         <input type="hidden" name="_method" value="POST">
                         <div class="form-group">
-                            <label>Nama Kategori</label>
-                            <input type="text" class="form-control" id="editNama" name="nama" />
-                        </div>
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select class="form-select form-control" id="editStatus" name="status">
+                            <label>Nama Petugas</label>
+                            <select class="form-select form-control" name="created_by" id="editCreated">
                                 <option value="">-Pilih-</option>
-                                <option value="aktif">Aktif</option>
-                                <option value="nonaktif">Nonaktif</option>
+                                @foreach ($petugas as $petuga)
+                                <option value="{{ $petuga->id }}">{{ $petuga->name }}</option>
+                                @endforeach
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label>Nama Peminjam</label>
+                            <select class="form-select form-control" name="user_id" id="editUser">
+                                <option value="">-Pilih-</option>
+                                @foreach ($peminjam as $pinjam)
+                                <option value="{{ $pinjam->id }}">{{ $pinjam->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">    
+                                    <label>Tanggal Pinjam</label>
+                                    <input type="date" class="form-control" name="tgl_pinjam" value="{{ old('tgl_pinjam', $tglPinjam) }}"  id="editTgl_pinjam"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">    
+                                    <label>Tanggal Kembali</label>
+                                    <input type="date" class="form-control" name="tgl_kembali" value="{{ old('tgl_kembali', $tglKembali) }}" id="editTgl_kembali" />
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div id="buku-items">
+                            <div class="row buku-item">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Nama Buku</label>
+                                        <select class="form-select form-control" name="buku_id[]" id="editBuku">
+                                            <option value="">-Pilih-</option>
+                                            @foreach ($bukus as $buku)
+                                            <option value="{{ $buku->id }}">{{ $buku->judul_buku }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Jumlah</label>
+                                        <input type="number" class="form-control" name="quantity[]" min="1" value="1" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="button" class="btn btn-danger remove-buku-item">Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="add-buku-item" class="btn btn-secondary">Tambah Buku</button>
+                        <hr>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Update</button>
                         </div>
@@ -191,12 +291,15 @@
                 var modal = $(this);
 
                 $.ajax({
-                    url: '/kategori/' + id + '/edit',
+                    url: '/peminjaman/' + id + '/edit',
                     method: 'GET',
                     success: function(data) {
-                        modal.find('#editNama').val(data.nama);
-                        modal.find('#editStatus').val(data.status);
-                        modal.find('#editForm').attr('action', '/kategori/' + id + '/update');
+                        modal.find('#editCreated').val(data.created_by);
+                        modal.find('#editUser').val(data.user_id);
+                        modal.find('#editTgl_pinjam').val(data.tgl_pinjam);
+                        modal.find('#editTgl_kembali').val(data.tgl_kembali);
+                        modal.find('#editBuku').val(data.quantity[]);
+                        modal.find('#editForm').attr('action', '/peminjaman/' + id + '/update');
                     }
                 });
             });
@@ -212,7 +315,7 @@
 
             $('#confirmDelete').click(function() {
                 $.ajax({
-                    url: '/kategori/' + categoryIdToDelete,
+                    url: '/peminjaman/' + categoryIdToDelete,
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -228,6 +331,43 @@
                         alert('Terjadi kesalahan: ' + xhr.responseJSON.message);
                     }
                 });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('add-buku-item').addEventListener('click', function () {
+                let bukuItemsContainer = document.getElementById('buku-items');
+                let newItem = document.createElement('div');
+                newItem.classList.add('row', 'buku-item');
+                newItem.innerHTML = `
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Nama Buku</label>
+                            <select class="form-select form-control" name="buku_id[]">
+                                <option value="">-Pilih-</option>
+                                @foreach ($bukus as $buku)
+                                <option value="{{ $buku->id }}">{{ $buku->judul_buku }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Jumlah</label>
+                            <input type="number" class="form-control" name="quantity[]" min="1" value="1" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger remove-buku-item">Hapus</button>
+                    </div>
+                `;
+                bukuItemsContainer.appendChild(newItem);
+            });
+
+            document.getElementById('buku-items').addEventListener('click', function (e) {
+                if (e.target && e.target.classList.contains('remove-buku-item')) {
+                    e.target.closest('.buku-item').remove();
+                }
             });
         });
     </script>

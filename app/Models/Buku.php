@@ -19,6 +19,10 @@ class Buku extends Model
         'stok',
         'status',
     ];
+    public function peminjamans()
+    {
+        return $this->belongsToMany(Peminjaman::class)->withPivot('quantity');
+    }
 }
 
 

@@ -7,7 +7,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center">
-                                <h4 class="card-title">List User</h4>
+                                <h4 class="card-title">Kelola User</h4>
                                 <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal"
                                     data-bs-target="#addModal">
                                     <i class="fa fa-plus"></i>
@@ -114,6 +114,7 @@
                                     <option value="Dosen" {{ old('role') == 'dosen' ? 'selected' : '' }}>Dosen</option>
                                     <option value="Petugas" {{ old('role') == 'petugas' ? 'selected' : '' }}>Petugas
                                     </option>
+                                    <option value="Mahasiswa" {{ old('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -241,7 +242,7 @@
                         modal.find('#editRole').val(data.role);
                         modal.find('#editNim').val(data.nim);
                         modal.find('#editEmail').val(data.email);
-                        modal.find('#editPassword').val(data.tahun_terbit);
+                        modal.find('#editPassword').val(data.password);
                         modal.find('#editForm').attr('action', '/user/' + id + '/update');
                     }
                 });
