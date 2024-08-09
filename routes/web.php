@@ -14,9 +14,10 @@ use App\Http\Controllers\ReqBukuController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -117,6 +118,13 @@ Route::group(['prefix' => 'req-buku', 'as' => 'req-buku.',], function () {
     Route::post('/update', [ReqBukuController::class, 'update'])->name('update');
     Route::delete('/destroy', [ReqBukuController::class, 'destroy'])->name('destroy');
 });
+
+
+
+
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 
 

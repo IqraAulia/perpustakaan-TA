@@ -15,6 +15,11 @@
                                 </button>
                             </div>
                             <div class="h6" id="datetime"></div>
+                            @if (session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -118,8 +123,8 @@
                                 <label>Role</label>
                                 <select class="form-select form-control" name="user_id">
                                     <option value="">-Pilih-</option>
-                                    @foreach ($user as $user)
-                                    <option value="{{ $user->id }}">{{ $user->role }}</option>
+                                    @foreach ($user as $us)
+                                    <option value="{{ $us->id }}">{{ $us->role }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -147,34 +152,32 @@
                         <div class="gambar">
                             <div class="form-group">
                                 <label>Nama</label>
-                                <input type="text" class="form-control form-control" name="name" placeholder=""
-                                    id="editName" value="{{ old('name') }}" />
-                            </div>
-                            <div class="form-group">
-                                <label>Status</label>
-                                <select class="form-select form-control" name="status"
-                                    id="editStatus">
-                                    <option value="xs">-Pilih-</option>
-                                    <option value="Setuju" {{ old('status') == 'setuju' ? 'selected' : '' }}>Setuju
-                                    </option>
-                                    <option value="Diajukan" {{ old('status') == 'diajukan' ? 'selected' : '' }}>
-                                        Diajukan</option>
-                                </select>
+                                <input type="text" class="form-control form-control" name="nama_lengkap" placeholder=""
+                                    value="{{ old('nama_lengkap') }}" id="editName"/>
                             </div>
                             <div class="form-group">
                                 <label>NIP</label>
-                                <input type="text" class="form-control form-control" name="nim" placeholder=""
-                                    id="editNim" value="{{ old('nim') }}" />
+                                <input type="text" class="form-control form-control" name="nomor_induk" placeholder=""
+                                    value="{{ old('nomor_induk') }}" id="editnomor_induk"/>
                             </div>
                             <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" class="form-control form-control" name="email" placeholder=""
-                                    id="editEmail" value="{{ old('email') }}" />
+                                <label>Alamat</label>
+                                <input type="text" class="form-control form-control" name="alamat" placeholder=""
+                                    value="{{ old('alamat') }}" id="editAlamat"/>
                             </div>
                             <div class="form-group">
-                                <label>Password</label>
-                                <input type="text" class="form-control form-control" name="password" placeholder=""
-                                    id="editPassword" value="{{ old('password') }}" />
+                                <label>No Hp</label>
+                                <input type="text" class="form-control form-control" name="noHp" placeholder=""
+                                    value="{{ old('noHp') }}" id="editNo"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Role</label>
+                                <select class="form-select form-control" name="user_id" id="editRole">
+                                    <option value="">-Pilih-</option>
+                                    @foreach ($user as $us)
+                                    <option value="{{ $us->id }}">{{ $us->role }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -225,11 +228,11 @@
                     success: function(data) {
                         console.log(data);
                         // modal.find('#editGambar').val(data.gambar_buku);
-                        modal.find('#editName').val(data.name);
-                        modal.find('#editStatus').val(data.status);
-                        modal.find('#editNim').val(data.nim);
-                        modal.find('#editEmail').val(data.email);
-                        modal.find('#editPassword').val(data.tahun_terbit);
+                        modal.find('#editName').val(data.nama_lengkap);
+                        modal.find('#editnomor_induk').val(data.nomor_induk);
+                        modal.find('#editAlamat').val(data.alamat);
+                        modal.find('#editNo').val(data.noHp);
+                        modal.find('#editRole').val(data.role);
                         modal.find('#editForm').attr('action', '/anggota/' + id + '/update');
                     }
                 });

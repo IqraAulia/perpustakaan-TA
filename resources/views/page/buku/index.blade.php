@@ -114,11 +114,11 @@
                             <select class="form-select form-control" name="kategori_id">
                                 <option value="">-Pilih-</option>
                                 @foreach ($kategori as $kat)
-                                <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
+                                    <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group">    
+                        <div class="form-group">
                             <label>Judul buku</label>
                             <input type="text" class="form-control form-control" name="judul_buku"
                                 value="{{ old('judul_buku') }}" />
@@ -128,7 +128,7 @@
                             <select class="form-select form-control" name="pengarang_id">
                                 <option value="">-Pilih-</option>
                                 @foreach ($pengarang as $png)
-                                <option value="{{ $png->id }}">{{ $png->nama }}</option>
+                                    <option value="{{ $png->id }}">{{ $png->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -137,7 +137,7 @@
                             <select class="form-select form-control" name="penerbit_id">
                                 <option value="">-Pilih-</option>
                                 @foreach ($penerbit as $pnb)
-                                <option value="{{ $pnb->id }}">{{ $pnb->nama }}</option>
+                                    <option value="{{ $pnb->id }}">{{ $pnb->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -157,9 +157,11 @@
                             <label>Status</label>
                             <select class="form-select form-control" name="status">
                                 <option value="">-Pilih-</option>
-                                <option value="Tersedia"{{ old('status') == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
+                                <option value="Tersedia"{{ old('status') == 'Tersedia' ? 'selected' : '' }}>Tersedia
+                                </option>
                                 <option value="Kosong"{{ old('status') == 'Kosong' ? 'selected' : '' }}>Kosong</option>
-                                <option value="Diajukan" {{ old('status') == 'Diajukan' ? 'selected' : '' }}>Diajukan</option>
+                                <option value="Diajukan" {{ old('status') == 'Diajukan' ? 'selected' : '' }}>Diajukan
+                                </option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -197,7 +199,7 @@
                             <select class="form-select form-control" name="kategori_id" id="editKategori">
                                 <option value="">-Pilih-</option>
                                 @foreach ($kategori as $kat)
-                                <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
+                                    <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -211,7 +213,7 @@
                             <select class="form-select form-control" name="pengarang_id" id="editPengarang">
                                 <option value="">-Pilih-</option>
                                 @foreach ($pengarang as $png)
-                                <option value="{{ $png->id }}">{{ $png->nama }}</option>
+                                    <option value="{{ $png->id }}">{{ $png->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -220,7 +222,7 @@
                             <select class="form-select form-control" name="penerbit_id" id="editPenerbit">
                                 <option value="">-Pilih-</option>
                                 @foreach ($penerbit as $pnb)
-                                <option value="{{ $pnb->id }}">{{ $pnb->nama }}</option>
+                                    <option value="{{ $pnb->id }}">{{ $pnb->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -240,19 +242,42 @@
                             <label>Status</label>
                             <select class="form-select form-control" name="status" id="editStatus">
                                 <option value="">-Pilih-</option>
-                                <option value="Tersedia"{{ old('status') == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
+                                <option value="Tersedia"{{ old('status') == 'Tersedia' ? 'selected' : '' }}>Tersedia
+                                </option>
                                 <option value="Kosong"{{ old('status') == 'Kosong' ? 'selected' : '' }}>Kosong</option>
-                                <option value="Diajukan" {{ old('status') == 'Diajukan' ? 'selected' : '' }}>Diajukan</option>
+                                <option value="Diajukan" {{ old('status') == 'Diajukan' ? 'selected' : '' }}>Diajukan
+                                </option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="comment">Daftar isi</label>
-                            <textarea class="form-control" id="editDaftarIsi" rows="5" name="daftar_isi" value="{{ old('daftar_isi') }}"></textarea>
+                            <textarea class="form-control" id="editDaftarIsi" rows="5" name="daftar_isi"
+                                value="{{ old('daftar_isi') }}"></textarea>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Simpan</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{-- modal hapus --}}
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteModalLabel">Konfirmasi Hapus</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus kategori ini?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Hapus</button>
                 </div>
             </div>
         </div>
@@ -285,7 +310,7 @@
                         modal.find('#editTahunTerbit').val(data.tahun_terbit);
                         modal.find('#editStok').val(data.stok);
                         modal.find('#editStatus').val(data.status);
-                        modal.find('#editDaftarIsi').val(data.daftar_isi); 
+                        modal.find('#editDaftarIsi').val(data.daftar_isi);
                         modal.find('#editForm').attr('action', '/buku/' + id + '/update');
                     }
                 });
