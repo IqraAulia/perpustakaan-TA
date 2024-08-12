@@ -42,7 +42,8 @@ class PinjamController extends Controller
 
             $peminjaman = Peminjaman::create([
                 // 'user_id' => auth()->user()->id ,
-                'user_id' => 1 ,
+                'user_id' => Auth::user()->id ,
+                // 'user_id' => 1 ,
                 'tgl_pinjam' => $request->tgl_pinjam,
                 'tgl_kembali' => $request->tgl_kembali,
             ]);

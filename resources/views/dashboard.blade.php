@@ -1,5 +1,6 @@
 @extends('layout.home')
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <div class="container">
     <div class="page-inner">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
@@ -510,4 +511,18 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '{{ session('success') }}',
+                timer: 1000, // waktu dalam milidetik sebelum alert menghilang
+                showConfirmButton: false // tombol konfirmasi tidak ditampilkan
+            });
+        @endif
+    });
+</script>
+
 @endsection

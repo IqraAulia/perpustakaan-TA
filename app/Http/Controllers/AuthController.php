@@ -23,14 +23,21 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            return redirect()->intended('home')->with('success', 'Login successful');
+        }
 
-            return redirect()->intended('home'); // ganti 'dashboard' dengan route yang ingin dituju setelah login berhasil
+        $user = \App\Models\User::where('email', $request->email)->first();
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Email tidak ditemukan.',
+            ])->onlyInput('email');
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'password' => 'Password salah. lupa Password ? silahkan hubungi admin ',
         ])->onlyInput('email');
     }
+
 
     public function logout(Request $request)
     {
@@ -39,6 +46,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('login');
     }
 }

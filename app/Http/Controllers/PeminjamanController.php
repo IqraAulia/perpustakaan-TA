@@ -123,7 +123,7 @@ class PeminjamanController extends Controller
 
             $peminjaman = Peminjaman::findOrFail($id);
             $peminjaman->update([
-                'user_id' => $request->user_id,
+                'user_id' => Auth::user()->id ,
                 'tgl_pinjam' => $request->tgl_pinjam,
                 'tgl_kembali' => $request->tgl_kembali,
             ]);
