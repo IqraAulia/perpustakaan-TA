@@ -259,8 +259,8 @@
                                 class="avatar-img rounded-circle" />
                         </div>
                         <span class="profile-username">
-                            <span class="op-7">Hi,</span>
-                            <span class="fw-bold">Hizrian</span>
+                            <div class="fw-bold">{{ Auth::user()->name }}</div>
+                            <div class="op-7">{{ Auth::user()->role }}</div>
                         </span>
                     </a>
                     <ul class="dropdown-menu dropdown-user animated fadeIn">

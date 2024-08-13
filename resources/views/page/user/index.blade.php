@@ -118,11 +118,6 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>NIP</label>
-                                <input type="text" class="form-control form-control" name="nim" placeholder=""
-                                    value="{{ old('nim') }}" />
-                            </div>
-                            <div class="form-group">
                                 <label>Email</label>
                                 <input type="text" class="form-control form-control" name="email" placeholder=""
                                     value="{{ old('email') }}" />
@@ -165,18 +160,14 @@
                                     <option value="">-Pilih-</option>
                                     <option value="Kaprodi" {{ old('role') == 'kaprodi' ? 'selected' : '' }}>Kaprodi
                                     </option>
-                                    <option value="Super Admin" {{ old('role') == 'super_admin' ? 'selected' : '' }}>
+                                    <option value="Super admin" {{ old('role') == 'super_admin' ? 'selected' : '' }}>
                                         Super Admin</option>
                                     <option value="Admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                                     <option value="Dosen" {{ old('role') == 'dosen' ? 'selected' : '' }}>Dosen</option>
                                     <option value="Petugas" {{ old('role') == 'petugas' ? 'selected' : '' }}>Petugas
                                     </option>
+                                    <option value="Mahasiswa" {{ old('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
                                 </select>
-                            </div>
-                            <div class="form-group">
-                                <label>NIP</label>
-                                <input type="text" class="form-control form-control" name="nim" placeholder="" id="editNim"
-                                    value="{{ old('nim') }}" />
                             </div>
                             <div class="form-group">
                                 <label>Email</label>
@@ -237,12 +228,10 @@
                     method: 'GET',
                     success: function(data) {
                         console.log(data);
-                        // modal.find('#editGambar').val(data.gambar_buku);
                         modal.find('#editName').val(data.name);
-                        modal.find('#editRole').val(data.role);
-                        modal.find('#editNim').val(data.nim);
-                        modal.find('#editEmail').val(data.email);
-                        modal.find('#editPassword').val(data.password);
+                        modal.find('#editRole').val(data.role).change()
+                        modal.find('#editNim').val(data.nim)
+                        modal.find('#editEmail').val(data.email)
                         modal.find('#editForm').attr('action', '/user/' + id + '/update');
                     }
                 });

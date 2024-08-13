@@ -141,11 +141,11 @@
                         </div>
                         <div class="form-group">
                             <label>Tanggal lahir</label>
-                            <input type="date" class="form-control" id="editTgl_lahir" name="nama" />
+                            <input type="date" class="form-control" id="editTgl_lahir" name="tgl_lahir" />
                         </div>
                         <div class="form-group">
                             <label>Alamat</label>
-                            <input type="text" class="form-control" id="editAlamat" name="nama" />
+                            <input type="text" class="form-control" id="editAlamat" name="alamat" />
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Update</button>

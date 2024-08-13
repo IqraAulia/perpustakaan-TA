@@ -134,7 +134,7 @@
                         </div>
                         <div class="form-group">
                             <label>Alamat</label>
-                            <input type="text" class="form-control" id="editAlamat" name="nama" />
+                            <input type="text" class="form-control" id="editAlamat" name="alamat" />
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" style="border-radius: 15px;">Update</button>

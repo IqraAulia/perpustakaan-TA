@@ -14,22 +14,22 @@ class ListBukuController extends Controller
 {
     public function index()
     {
-
         $bukus = Buku::selectRaw("
-                    bukus.*,
-                    kategoris.nama as kategori,
-                    pengarangs.nama as pengarang,
-                    penerbits.nama as penerbit
-                ")
-            ->join('kategoris', 'bukus.kategori_id', 'kategoris.id')
-            ->join('pengarangs', 'bukus.pengarang_id', 'pengarangs.id')
-            ->join('penerbits', 'bukus.penerbit_id', 'penerbits.id')
-            ->get();
-
+                        bukus.*,
+                        kategoris.nama as kategori,
+                        pengarangs.nama as pengarang,
+                        penerbits.nama as penerbit
+                    ")
+                ->join('kategoris', 'bukus.kategori_id', 'kategoris.id')
+                ->join('pengarangs', 'bukus.pengarang_id', 'pengarangs.id')
+                ->join('penerbits', 'bukus.penerbit_id', 'penerbits.id')
+                ->where('bukus.status', '!=', 'diajukan') 
+                ->get();
+    
         $kategori = Kategori::get();
         $pengarang = Pengarang::get();
         $penerbit = Penerbit::get();
-
+    
         return view('page.list-buku.index', [
             'bukus' => $bukus,
             'kategori' => $kategori,
@@ -37,6 +37,7 @@ class ListBukuController extends Controller
             'penerbit' => $penerbit,
         ]);
     }
+    
     public function store(Request $request)
     {
         // Simpan list-buku baru

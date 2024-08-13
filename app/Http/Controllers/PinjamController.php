@@ -41,11 +41,10 @@ class PinjamController extends Controller
             DB::beginTransaction();
 
             $peminjaman = Peminjaman::create([
-                // 'user_id' => auth()->user()->id ,
-                'user_id' => Auth::user()->id ,
-                // 'user_id' => 1 ,
+                'user_id' => Auth::user()->id,
                 'tgl_pinjam' => $request->tgl_pinjam,
                 'tgl_kembali' => $request->tgl_kembali,
+                'status' => 'booking',
             ]);
 
             foreach ($request->buku_id as $key => $buku_id) {

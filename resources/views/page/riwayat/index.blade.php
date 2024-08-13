@@ -8,14 +8,7 @@
                     <div class="card-header">
                         <div class="d-flex align-items-center">
                           <h4 class="card-title">List Riwayat</h4>
-                          <button
-                            class="btn btn-primary btn-round ms-auto"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addRowModal"
-                          >
-                            <i class="fa fa-plus"></i>
-                            Add Row
-                          </button>
+                          
                         </div>
                         <div class="h6" id="datetime"></div>
                       </div>
@@ -34,28 +27,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Alexus Morem</td>
-                                        <td>Dosen</td>
-                                        <td>3</td>
-                                        <td>sabtu, 13 juni 2024</td>
-                                        <td>sabtu, 13 juni 2024</td>
-                                        <td>
-                                            <a href="{{ route('riwayat.detail') }}">
-                                                <i class="fas fa-info-circle" style="color: #1572E8"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Cedric Do</td>
-                                        <td>Mahasiswa</td>
-                                        <td>3</td>
-                                        <td>sabtu, 13 juni 2024</td>
-                                        <td>sabtu, 13 juni 2024</td>
-                                        <td><i class="fas fa-info-circle" style="color: #1572E8"></i></td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>

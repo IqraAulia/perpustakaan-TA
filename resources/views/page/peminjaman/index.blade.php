@@ -30,43 +30,74 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Nama Petugas</th>
-                                            <th>Sebagai</th>
                                             <th>Nama peminjaman</th>
-                                            <th>role</th>
                                             <th>Tanggal pinjam</th>
-                                            <th>tanggal kembali</th>
-                                            <th>detail</th>
-                                            <th>aksi</th>
+                                            <th>Tanggal kembali</th>
+                                            <th>Buku Dipinjam</th>
+                                            <th>Denda</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($peminjaman as $item)
+                                        @foreach ($peminjamans as $item)
                                             <tr>
                                                 <td>{{$loop->iteration}}</td>
-                                                <td>{{$item->name}}</td>
-                                                <td>{{$item->role}}</td>
-                                                <td>{{$item->name}}</td>
-                                                <td>{{$item->role}}</td>
+                                                <td>
+                                                    {{ $item->created_by_name ? $item->created_by_name . ' [' . $item->created_by_role . ']' : 'Petugas belum dipilih' }}
+                                                </td>
+                                                <td>{{$item->name}} [{{$item->role}}]</td>
                                                 <td>{{$item->tgl_pinjam}}</td>
                                                 <td>{{$item->tgl_kembali}}</td>
                                                 <td>
-                                                    <a href="#">
-                                                        <i class="fas fa-info-circle" style="color: #1572E8"></i>
-                                                    </a>
+                                                    <ul>
+                                                        @foreach($item->peminjamanDetail as $detail)
+                                                            <li>{{ $detail->buku->judul_buku }} - [{{ $detail->jumlah }} buah]</li>
+                                                        @endforeach
+                                                    </ul>
                                                 </td>
                                                 <td>
+                                                    @if ($item->denda)
+                                                        <p>Jumlah: {{ $item->denda->denda }} <br> Deskripsi: {{ $item->denda->deskripsi }}</li>
+                                                    @else
+                                                        Tidak ada denda
+                                                    @endif
+                                                </td>
+                                                <td>{{$item->status}}</td>
+                                                <td>
                                                     <div class="form-button-action">
-                                                        <button type="button" data-id="{{ $item->id }}"
-                                                            data-bs-toggle="modal" data-bs-target="#editModal"
-                                                            class="btn btn-link btn-primary btn-lg"
-                                                            data-original-title="Edit Task">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                        <button type="button" data-id="{{ $item->id }}"
-                                                            class="btn btn-link btn-danger btn-delete"
-                                                            data-original-title="Remove">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
+                                                        @if ($item->status == 'booking')
+                                                            <!-- Tombol untuk proses booking -->
+                                                            <button type="button" data-id="{{ $item->id }}"
+                                                                class="btn btn-link btn-success btn-approve"
+                                                                data-original-title="Approve">
+                                                                <i class="fa fa-check"></i> Approve
+                                                            </button>
+                                                            <button type="button" data-id="{{ $item->id }}"
+                                                                class="btn btn-link btn-warning btn-reject"
+                                                                data-original-title="Reject">
+                                                                <i class="fa fa-times"></i> Reject
+                                                            </button>
+                                                        @elseif ($item->status == 'dipinjam')
+                                                            <!-- Tombol untuk menyelesaikan peminjaman -->
+                                                            <button type="button" data-id="{{ $item->id }}"
+                                                                class="btn btn-link btn-info btn-complete"
+                                                                data-original-title="Complete">
+                                                                <i class="fa fa-check-circle"></i> Complete
+                                                            </button>
+                                                        @elseif ($item->status == 'ditolak')
+                                                            <!-- Tombol untuk menghapus jika ditolak -->
+                                                            <button type="button" data-id="{{ $item->id }}"
+                                                                class="btn btn-link btn-danger btn-delete"
+                                                                data-original-title="Remove">
+                                                                <i class="fa fa-times"></i> Delete
+                                                            </button>
+                                                        @elseif ($item->status == 'selesai')
+                                                            {{-- <!-- Tidak ada tombol untuk status selesai -->
+                                                            <button type="button" class="btn btn-link btn-secondary">
+                                                                <i class="fa fa-check"></i> Completed
+                                                            </button> --}}
+                                                        @endif
                                                     </div>
                                                 </td>
                                             </tr>
@@ -113,7 +144,10 @@
                             <select class="form-select form-control" name="created_by">
                                 <option value="">-Pilih-</option>
                                 @foreach ($petugas as $petuga)
-                                <option value="{{ $petuga->id }}">{{ $petuga->name }}</option>
+                                    <option value="{{ $petuga->id }}" 
+                                        {{ auth()->user()->id == $petuga->id ? 'selected' : '' }}>
+                                        {{ $petuga->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -275,6 +309,35 @@
             </div>
         </div>
     </div>
+
+    {{-- modal complete delete --}}
+    <div class="modal fade" id="completeModal" tabindex="-1" aria-labelledby="completeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="completeModalLabel">Complete Peminjaman</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="completeForm">
+                        <div class="mb-3">
+                            <label for="fine_amount" class="form-label">Denda (Opsional)</label>
+                            <input type="number" class="form-control" id="fine_amount" name="fine_amount" placeholder="Masukkan jumlah denda">
+                        </div>
+                        <div class="mb-3">
+                            <label for="fine_description" class="form-label">Deskripsi Denda (Opsional)</label>
+                            <textarea class="form-control" id="fine_description" name="fine_description" rows="3" placeholder="Masukkan deskripsi denda"></textarea>
+                        </div>
+                        <input type="hidden" id="peminjaman_id" name="peminjaman_id">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="submitComplete">Complete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('js')
@@ -298,7 +361,7 @@
                         modal.find('#editUser').val(data.user_id);
                         modal.find('#editTgl_pinjam').val(data.tgl_pinjam);
                         modal.find('#editTgl_kembali').val(data.tgl_kembali);
-                        modal.find('#editBuku').val(data.quantity[]);
+                        // modal.find('#editBuku').val(data.quantity[]);
                         modal.find('#editForm').attr('action', '/peminjaman/' + id + '/update');
                     }
                 });
@@ -370,5 +433,120 @@
                 }
             });
         });
+
+        $(document).ready(function() {
+            // Approve action with confirmation
+            $('.btn-approve').click(function() {
+                let id = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to approve this peminjaman?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, approve it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/peminjaman/' + id + '/approve',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                            },
+                            success: function(response) {
+                                Swal.fire('Approved!', 'Peminjaman has been approved.', 'success').then(() => {
+                                    location.reload();
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Reject action with confirmation
+            $('.btn-reject').click(function() {
+                let id = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to reject this peminjaman?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, reject it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/peminjaman/' + id + '/reject',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                            },
+                            success: function(response) {
+                                Swal.fire('Rejected!', 'Peminjaman has been rejected.', 'success').then(() => {
+                                    location.reload();
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Complete action with confirmation and form
+            $('.btn-complete').click(function() {
+                let id = $(this).data('id');
+                $('#peminjaman_id').val(id);
+                $('#completeModal').modal('show');
+            });
+
+            $('#submitComplete').click(function() {
+                let id = $('#peminjaman_id').val();
+                $.ajax({
+                    url: '/peminjaman/' + id + '/complete',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        denda: $('#fine_amount').val(),
+                        deskripsi: $('#fine_description').val()
+                    },
+                    success: function(response) {
+                        Swal.fire('Completed!', 'Peminjaman has been marked as complete.', 'success').then(() => {
+                            location.reload();
+                        });
+                    }
+                });
+            });
+
+            // Delete action with confirmation
+            $('.btn-delete').click(function() {
+                let id = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to delete this peminjaman?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/peminjaman/' + id + '/destroy',
+                            method: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                            },
+                            success: function(response) {
+                                Swal.fire('Deleted!', 'Peminjaman has been deleted.', 'success').then(() => {
+                                    location.reload();
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
     </script>
 @endsection

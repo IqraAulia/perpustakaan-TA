@@ -28,7 +28,7 @@
                                     <tbody>
                                         @foreach ($bukus as $item)
                                             <tr>
-                                                <td>{{ $item->id }}</td>
+                                                <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kategori }}</td>
                                                 <td>{{ $item->judul_buku }}</td>
                                                 <td>{{ $item->stok }}</td>

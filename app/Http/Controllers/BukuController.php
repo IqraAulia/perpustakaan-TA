@@ -25,11 +25,12 @@ class BukuController extends Controller
             ->join('pengarangs', 'bukus.pengarang_id', 'pengarangs.id')
             ->join('penerbits', 'bukus.penerbit_id', 'penerbits.id')
             ->get();
-
-        $kategori = Kategori::get();
+    
+        // Exclude categories with 'nonaktif' status
+        $kategori = Kategori::where('status', '!=', 'nonaktif')->get();
         $pengarang = Pengarang::get();
         $penerbit = Penerbit::get();
-
+    
         return view('page.buku.index', [
             'bukus' => $bukus,
             'kategori' => $kategori,
@@ -37,6 +38,7 @@ class BukuController extends Controller
             'penerbit' => $penerbit,
         ]);
     }
+    
     public function store(Request $request)
     {
         // dd($request->all());
@@ -101,7 +103,7 @@ class BukuController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'gambar_buku' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar_buku' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'judul_buku' => 'required',
             'daftar_isi' => 'required',
             'kategori_id' => 'required',
@@ -121,15 +123,10 @@ class BukuController extends Controller
 
         try {
             DB::beginTransaction();
-            $gambarBukuPath = null;
-            if ($request->hasFile('gambar_buku')) {
-                $file = $request->file('gambar_buku');
-                $gambarBukuPath = $file->store('gambar_buku', 'public');
-            }
+           
 
             $buku = Buku::findOrFail($id);
             $buku->update([
-                'gambar_buku' => $gambarBukuPath,
                 'judul_buku' => $request->judul_buku,
                 'daftar_isi' => $request->daftar_isi,
                 'kategori_id' => $request->kategori_id,

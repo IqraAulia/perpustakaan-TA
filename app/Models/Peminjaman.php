@@ -15,6 +15,7 @@ class Peminjaman extends Model
         'tgl_pinjam',
         'tgl_kembali',
         'tgl_kembalikan',
+        'status',
     ];
 
     public function peminjamanDetail()
@@ -24,5 +25,10 @@ class Peminjaman extends Model
     public function buku()
     {
         return $this->belongsToMany(Buku::class)->withPivot('quantity');
+    }
+
+    public function denda()
+    {
+        return $this->hasOne(Denda::class);
     }
 }

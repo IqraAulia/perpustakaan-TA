@@ -60,21 +60,9 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('anggota.index') }}">
-                            <i class="fas fa-users"></i>
-                            <p>anggota</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a href="{{ route('peminjaman.index') }}">
                             <i class="fas fa-arrow-left"></i>
                             <p>kelola peminjaman</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('pengembalian.index') }}">
-                            <i class="fas fa-arrow-right"></i>
-                            <p>kelola pengembalian</p>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -85,7 +73,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('list-buku.index') }}">
-                            <i class="fas fa-book"></i>
+                            <i class="fab fa-readme"></i>
                             <p>Buku</p>
                         </a>
                     </li>
@@ -149,24 +137,14 @@
                             <p>user</p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ route('anggota.index') }}">
-                            <i class="fas fa-users"></i>
-                            <p>anggota</p>
-                        </a>
-                    </li>
+                    
                     <li class="nav-item">
                         <a href="{{ route('peminjaman.index') }}">
                             <i class="fas fa-arrow-left"></i>
                             <p>kelola peminjaman</p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ route('pengembalian.index') }}">
-                            <i class="fas fa-arrow-right"></i>
-                            <p>kelola pengembalian</p>
-                        </a>
-                    </li>
+                
                     <li class="nav-item">
                         <a href="{{ route('riwayat.index') }}">
                             <i class="fas fa-history"></i>
@@ -212,12 +190,7 @@
                             <p>kelola peminjaman</p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ route('pengembalian.index') }}">
-                            <i class="fas fa-arrow-right"></i>
-                            <p>kelola pengembalian</p>
-                        </a>
-                    </li>
+                
                     <li class="nav-item">
                         <a href="{{ route('riwayat.index') }}">
                             <i class="fas fa-history"></i>
@@ -234,7 +207,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('list-buku.index') }}">
-                            <i class="fas fa-book"></i>
+                            <i class="fab fa-readme"></i>
                             <p>Buku</p>
                         </a>
                     </li>
@@ -260,7 +233,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('list-buku.index') }}">
-                            <i class="fas fa-book"></i>
+                            <i class="fab fa-readme"></i>
                             <p>Buku</p>
                         </a>
                     </li>

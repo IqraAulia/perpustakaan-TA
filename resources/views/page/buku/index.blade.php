@@ -40,7 +40,7 @@
                                     <tbody>
                                         @foreach ($bukus as $item)
                                             <tr>
-                                                <td>{{ $item->id }}</td>
+                                                <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $item->kategori }}</td>
                                                 <td>{{ $item->judul_buku }}</td>
                                                 <td>{{ $item->stok }}</td>
@@ -105,7 +105,7 @@
                     <form action="{{ route('buku.store') }}" method="POST" enctype="multipart/form-data" id="addForm">
                         @csrf
                         <div class="form-group">
-                            <label for="exampleFormControlFile1">Example file input</label>
+                            <label for="exampleFormControlFile1">Example file input</label><br>
                             <input type="file" class="form-control-file" id="exampleFormControlFile1" name="gambar_buku"
                                 value="{{ old('gambar_buku') }}" />
                         </div>
@@ -305,8 +305,8 @@
                         console.log(data.kategori_id);
                         modal.find('#editKategori').val(data.kategori_id);
                         modal.find('#editJudul').val(data.judul_buku);
-                        modal.find('#editPengarang').val(data.pengarang);
-                        modal.find('#editPenerbit').val(data.penerbit);
+                        modal.find('#editPengarang').val(data.penerbit_id);
+                        modal.find('#editPenerbit').val(data.penerbit_id);
                         modal.find('#editTahunTerbit').val(data.tahun_terbit);
                         modal.find('#editStok').val(data.stok);
                         modal.find('#editStatus').val(data.status);

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('tgl_pinjam');
             $table->date('tgl_kembali');
             $table->date('tgl_kembalikan')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

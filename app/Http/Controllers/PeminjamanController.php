@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buku;
+use App\Models\Denda;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanDetail;
 use App\Models\User;
@@ -15,19 +16,22 @@ class PeminjamanController extends Controller
 {
     public function index()
     {
-        $peminjamans = Peminjaman::selectRaw("
+        $peminjamans = Peminjaman::with(['peminjamanDetail.buku', 'denda'])->selectRaw("
                     peminjaman.*,
-                    users.name as name,
-                    users.role as role
+                    user_created.name as created_by_name,
+                    user_created.role as created_by_role,
+                    user.name as name,
+                    user.role as role
                     ")
-            ->join('users', 'peminjaman.user_id', 'users.id')
+            ->join('users as user', 'peminjaman.user_id', '=', 'user.id')
+            ->leftJoin('users as user_created', 'peminjaman.created_by', '=', 'user_created.id')
             ->get();
 
         $peminjam = User::whereIn('users.role', ['Dosen', 'Mahasiswa'])->get();
         $petugas = User::whereIn('users.role', ['Super admin', 'Admin', 'Petugas', 'Kaprodi'])->get();
 
         return view('page.peminjaman.index', [
-            'peminjaman' => $peminjamans,
+            'peminjamans' => $peminjamans,
             'peminjam' => $peminjam,
             'petugas' => $petugas,
             'bukus' => Buku::all(),
@@ -107,6 +111,7 @@ class PeminjamanController extends Controller
             'user_id' => 'required',
             'tgl_pinjam' => 'required',
             'tgl_kembali' => 'required',
+            'status' => 'required',
             'buku_id.*' => 'required',
             'quantity.*' => 'required',
         ]);
@@ -145,23 +150,84 @@ class PeminjamanController extends Controller
                 ->withInput();
         }
     }
+    // public function destroy($id)
+    // {
+    //     try {
+    //         $peminjaman = Peminjaman::findOrFail($id);
+    //         $peminjaman->delete();
 
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Berhasil menghapus data'
+    //         ]);
+    //     } catch (\Throwable $th) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Gagal menghapus data: ' . $th->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
+    public function approve($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman->status = 'dipinjam';
+
+        // Kurangi stok buku
+        foreach ($peminjaman->peminjamanDetail as $detail) {
+            $buku = $detail->buku;
+            $buku->stok -= $detail->jumlah;
+            $buku->save();
+        }
+                
+        // Update created_by berdasarkan pengguna yang login
+        $peminjaman->created_by = Auth::id();
+        $peminjaman->save();
+
+        return response()->json(['success' => 'Peminjaman approved!']);
+    }
+
+    public function reject($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman->status = 'ditolak';
+        $peminjaman->save();
+
+        return response()->json(['success' => 'Peminjaman rejected!']);
+    }
+
+    public function complete(Request $request, $id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman->status = 'selesai';
+
+        // Tambahkan stok buku kembali
+        foreach ($peminjaman->peminjamanDetail as $detail) {
+            $buku = $detail->buku;
+            $buku->stok += $detail->jumlah;
+            $buku->save();
+        }
+
+        // Periksa dan simpan denda jika ada
+        if ($request->has('denda')) {
+            Denda::create([
+                'peminjaman_id' => $id,
+                'denda' => $request->input('denda'),
+                'deskripsi' => $request->input('deskripsi', ''),
+            ]);
+        }
+
+        $peminjaman->save();
+
+        return response()->json(['success' => 'Peminjaman completed!']);
+    }
 
     public function destroy($id)
     {
-        try {
-            $peminjaman = Peminjaman::findOrFail($id);
-            $peminjaman->delete();
+        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman->peminjamanDetail()->delete();
+        $peminjaman->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Berhasil menghapus data'
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal menghapus data: ' . $th->getMessage()
-            ], 500);
-        }
+        return response()->json(['success' => 'Peminjaman deleted!']);
     }
 }

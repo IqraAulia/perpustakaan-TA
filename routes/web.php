@@ -78,13 +78,19 @@ Route::group(['prefix' => 'anggota', 'as' => 'anggota.',], function () {
     Route::delete('/{id}', [AnggotaController::class, 'destroy'])->name('destroy');
 });
 
-Route::group(['prefix' => 'peminjaman', 'as' => 'peminjaman.',], function () {
+Route::group(['prefix' => 'peminjaman', 'as' => 'peminjaman.'], function () {
     Route::get('/', [PeminjamanController::class, 'index'])->name('index');
     Route::get('/detail', [PeminjamanController::class, 'detail'])->name('detail');
     Route::post('/store', [PeminjamanController::class, 'store'])->name('store');
     Route::get('/{id}/edit', [PeminjamanController::class, 'edit'])->name('edit');
     Route::post('/{id}/update', [PeminjamanController::class, 'update'])->name('update');
-    Route::delete('/destroy', [PeminjamanController::class, 'destroy'])->name('destroy');
+    // Route::delete('/destroy', [PeminjamanController::class, 'destroy'])->name('destroy');
+
+    // Routes untuk approve, reject, complete, dan destroy sesuai status
+    Route::post('/{id}/approve', [PeminjamanController::class, 'approve'])->name('approve');
+    Route::post('/{id}/reject', [PeminjamanController::class, 'reject'])->name('reject');
+    Route::post('/{id}/complete', [PeminjamanController::class, 'complete'])->name('complete');
+    Route::delete('/{id}/destroy', [PeminjamanController::class, 'destroy'])->name('destroy');
 });
 
 Route::group(['prefix' => 'pengembalian', 'as' => 'pengembalian.',], function () {
