@@ -2,14 +2,14 @@
 <html lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Pustaka</title>
+    <title>Pustaka Psdku</title>
     <meta
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
       name="viewport"
     />
     <link
       rel="icon"
-      href="{{asset('kaiadmin-lite-1.0.0/assets/img/kaiadmin/favicon.ico')}}"
+      href="{{asset('kaiadmin-lite-1.0.0/assets/img/examples/logo-pnp.jpg')}}"
       type="image/x-icon"
     />
 
