@@ -1,5 +1,10 @@
 @extends('layout.home')
 @section('content')
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
     <div class="container">
         <div class="page-inner">
             <div class="row">
@@ -46,9 +51,10 @@
                                                 <td>{{ $item->stok }}</td>
                                                 <td>{{ $item->status }}</td>
                                                 <td>
-                                                    <a href="#">
+                                                    <button type="button" class="btn" data-bs-toggle="modal"
+                                                        data-bs-target="#exampleModal{{ $item->id }}" data-id="{{ $item->id }}">
                                                         <i class="fas fa-info-circle" style="color: #1572E8"></i>
-                                                    </a>
+                                                    </button>
                                                 </td>
                                                 <td>
                                                     <div class="form-button-action">
@@ -66,6 +72,30 @@
                                                     </div>
                                                 </td>
                                             </tr>
+                                            <!-- Modal Detail Buku -->
+                                            <div class="modal fade" id="exampleModal{{ $item->id }}" tabindex="-1"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ $item->judul_buku }}
+                                                            </h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p></p>
+                                                            <img width="100" src="{{ asset('storage/' . $item->gambar_buku) }}" alt="">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-primary">Save
+                                                                changes</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -76,6 +106,8 @@
             </div>
         </div>
     </div>
+
+
 
     {{-- Add Modal --}}
     <div class="modal fade @if ($errors->any()) show @endif" id="addModal" tabindex="-1"
@@ -341,6 +373,31 @@
                     },
                     error: function(xhr) {
                         alert('Terjadi kesalahan: ' + xhr.responseJSON.message);
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            $('.detail-btn').on('click', function(e) {
+                e.preventDefault();
+
+                // Ambil ID buku dari atribut data-id
+                var bookId = $(this).data('id');
+
+                // Kirim permintaan AJAX untuk mengambil detail buku
+                $.ajax({
+                    url: '/buku/' + bookId + '/detail', // URL untuk mendapatkan data detail buku
+                    type: 'GET',
+                    success: function(response) {
+                        // Tampilkan data yang didapatkan ke dalam modal
+                        $('#book-details').html(response);
+
+                        // Tampilkan modal
+                        $('#detailModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
                     }
                 });
             });

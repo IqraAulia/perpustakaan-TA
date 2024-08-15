@@ -9,6 +9,7 @@ use App\Models\Pengarang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class BukuController extends Controller
@@ -25,12 +26,12 @@ class BukuController extends Controller
             ->join('pengarangs', 'bukus.pengarang_id', 'pengarangs.id')
             ->join('penerbits', 'bukus.penerbit_id', 'penerbits.id')
             ->get();
-    
+
         // Exclude categories with 'nonaktif' status
         $kategori = Kategori::where('status', '!=', 'nonaktif')->get();
         $pengarang = Pengarang::get();
         $penerbit = Penerbit::get();
-    
+
         return view('page.buku.index', [
             'bukus' => $bukus,
             'kategori' => $kategori,
@@ -38,7 +39,7 @@ class BukuController extends Controller
             'penerbit' => $penerbit,
         ]);
     }
-    
+
     public function store(Request $request)
     {
         // dd($request->all());
@@ -69,6 +70,23 @@ class BukuController extends Controller
                 $file = $request->file('gambar_buku');
                 $gambarBukuPath = $file->store('gambar_buku', 'public');
             }
+
+            // Cek apakah ada file gambar yang di-upload
+            if ($request->hasFile('gambar_buku')) {
+                // Dapatkan nama asli file dan ganti spasi dengan strip
+                $originalName = $request->file('gambar_buku')->getClientOriginalName();
+                $fileName = pathinfo($originalName, PATHINFO_FILENAME);
+                $fileExtension = $request->file('gambar_buku')->getClientOriginalExtension();
+                $randomNumber = rand(1000, 9999); // Angka 4 digit
+                $finalName = str_replace(' ', '-', $fileName) . '-' . $randomNumber . '.' . $fileExtension;
+
+                // Simpan file gambar ke folder public/img dengan nama yang telah diubah
+                $gambarBukuPath = $request->file('gambar_buku')->storeAs('img', $finalName, 'public');
+            } else {
+                // Jika tidak ada file gambar, set ke null atau default path
+                $gambarBukuPath = null;
+            }
+
 
             Buku::create([
                 'gambar_buku' => $gambarBukuPath,
@@ -123,11 +141,36 @@ class BukuController extends Controller
 
         try {
             DB::beginTransaction();
-           
 
             $buku = Buku::findOrFail($id);
+
+            if ($request->hasFile('gambar_buku')) {
+                // Hapus gambar lama dari storage jika ada
+                if ($buku->gambar_buku && Storage::disk('public')->exists($buku->gambar_buku)) {
+                    Storage::disk('public')->delete($buku->gambar_buku);
+                }
+            
+                // Dapatkan nama asli file dan ganti spasi dengan strip
+                $originalName = $request->file('gambar_buku')->getClientOriginalName();
+                $fileName = pathinfo($originalName, PATHINFO_FILENAME);
+                $fileExtension = $request->file('gambar_buku')->getClientOriginalExtension();
+            
+                // Tambahkan angka 4 digit secara acak ke nama file
+                $randomNumber = rand(1000, 9999); // Angka 4 digit
+                $finalName = str_replace(' ', '-', $fileName) . '-' . $randomNumber . '.' . $fileExtension;
+            
+                // Simpan file gambar baru ke folder public/img dengan nama yang telah diubah
+                $gambarBukuPath = $request->file('gambar_buku')->storeAs('img', $finalName, 'public');
+            
+                // Update path gambar baru di database
+                $buku->gambar_buku = $gambarBukuPath;
+            }
+            
+
+
             $buku->update([
                 'judul_buku' => $request->judul_buku,
+                'gambar_buku' => $gambarBukuPath,
                 'daftar_isi' => $request->daftar_isi,
                 'kategori_id' => $request->kategori_id,
                 'pengarang_id' => $request->pengarang_id,
@@ -164,8 +207,20 @@ class BukuController extends Controller
             ], 500);
         }
     }
-    public function detail()
+    public function showDetail($id)
     {
-        return view('page.buku.detail');
+        $buku = Buku::selectRaw("
+                    bukus.*,
+                    kategoris.nama as kategori,
+                    pengarangs.nama as pengarang,
+                    penerbits.nama as penerbit
+                ")
+            ->join('kategoris', 'bukus.kategori_id', 'kategoris.id')
+            ->join('pengarangs', 'bukus.pengarang_id', 'pengarangs.id')
+            ->join('penerbits', 'bukus.penerbit_id', 'penerbits.id')
+            ->where('bukus.id', $id)
+            ->first();
+
+        return view('partials.buku-detail', ['buku' => $buku]);
     }
 }

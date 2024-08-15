@@ -52,6 +52,7 @@ Route::group(['prefix' => 'buku', 'as' => 'buku.',], function () {
     Route::get('/{id}/edit', [BukuController::class, 'edit'])->name('edit');
     Route::post('/{id}/update', [BukuController::class, 'update'])->name('update');
     Route::delete('/{id}', [BukuController::class, 'destroy'])->name('kategori.destroy');
+    Route::get('/buku/{id}/detail', [BukuController::class, 'showDetail'])->name('buku.detail');
 });
 
 Route::group(['prefix' => 'list-buku', 'as' => 'list-buku.',], function () {
