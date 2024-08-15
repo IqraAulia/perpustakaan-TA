@@ -52,4 +52,21 @@ class ListBukuController extends Controller
     {
         // Hapus list-buku
     }
+
+    public function showDetail($id)
+    {
+        $buku = Buku::selectRaw("
+                    bukus.*,
+                    kategoris.nama as kategori,
+                    pengarangs.nama as pengarang,
+                    penerbits.nama as penerbit
+                ")
+            ->join('kategoris', 'bukus.kategori_id', 'kategoris.id')
+            ->join('pengarangs', 'bukus.pengarang_id', 'pengarangs.id')
+            ->join('penerbits', 'bukus.penerbit_id', 'penerbits.id')
+            ->where('bukus.id', $id)
+            ->firstOrFail();
+
+        return response()->json($buku);
+    }
 }

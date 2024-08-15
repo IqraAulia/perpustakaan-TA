@@ -52,7 +52,7 @@ Route::group(['prefix' => 'buku', 'as' => 'buku.',], function () {
     Route::get('/{id}/edit', [BukuController::class, 'edit'])->name('edit');
     Route::post('/{id}/update', [BukuController::class, 'update'])->name('update');
     Route::delete('/{id}', [BukuController::class, 'destroy'])->name('kategori.destroy');
-    Route::get('/buku/{id}/detail', [BukuController::class, 'showDetail'])->name('buku.detail');
+    Route::get('/{id}/detail', [BukuController::class, 'showDetail'])->name('detail');
 });
 
 Route::group(['prefix' => 'list-buku', 'as' => 'list-buku.',], function () {
@@ -60,6 +60,7 @@ Route::group(['prefix' => 'list-buku', 'as' => 'list-buku.',], function () {
     Route::post('/store', [ListBukuController::class, 'store'])->name('store');
     Route::post('/update', [ListBukuController::class, 'update'])->name('update');
     Route::delete('/destroy', [ListBukuController::class, 'destroy'])->name('destroy');
+    Route::get('/{id}/detail', [BukuController::class, 'showDetail'])->name('detail');
 });
 
 

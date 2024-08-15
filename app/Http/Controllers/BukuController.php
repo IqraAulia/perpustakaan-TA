@@ -42,7 +42,6 @@ class BukuController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'gambar_buku' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'judul_buku' => 'required',
@@ -54,7 +53,6 @@ class BukuController extends Controller
             'stok' => 'required',
             'status' => 'required',
         ]);
-
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -68,25 +66,10 @@ class BukuController extends Controller
             $gambarBukuPath = null;
             if ($request->hasFile('gambar_buku')) {
                 $file = $request->file('gambar_buku');
-                $gambarBukuPath = $file->store('gambar_buku', 'public');
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $fileName = str_replace(' ', '-', $originalName) . '.' . $file->getClientOriginalExtension();
+                $gambarBukuPath = $file->storeAs('gambar_buku', $fileName, 'public');
             }
-
-            // Cek apakah ada file gambar yang di-upload
-            if ($request->hasFile('gambar_buku')) {
-                // Dapatkan nama asli file dan ganti spasi dengan strip
-                $originalName = $request->file('gambar_buku')->getClientOriginalName();
-                $fileName = pathinfo($originalName, PATHINFO_FILENAME);
-                $fileExtension = $request->file('gambar_buku')->getClientOriginalExtension();
-                $randomNumber = rand(1000, 9999); // Angka 4 digit
-                $finalName = str_replace(' ', '-', $fileName) . '-' . $randomNumber . '.' . $fileExtension;
-
-                // Simpan file gambar ke folder public/img dengan nama yang telah diubah
-                $gambarBukuPath = $request->file('gambar_buku')->storeAs('img', $finalName, 'public');
-            } else {
-                // Jika tidak ada file gambar, set ke null atau default path
-                $gambarBukuPath = null;
-            }
-
 
             Buku::create([
                 'gambar_buku' => $gambarBukuPath,
@@ -100,7 +83,6 @@ class BukuController extends Controller
                 'status' => $request->status,
             ]);
 
-
             DB::commit();
             return redirect()->route('buku.index')->with('success', 'Berhasil menambah data');
         } catch (\Throwable $th) {
@@ -110,6 +92,7 @@ class BukuController extends Controller
                 ->withInput();
         }
     }
+
 
 
     public function edit($id)
@@ -132,7 +115,6 @@ class BukuController extends Controller
             'status' => 'required',
         ]);
 
-
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
@@ -144,33 +126,22 @@ class BukuController extends Controller
 
             $buku = Buku::findOrFail($id);
 
+            $gambarBukuPath = $buku->gambar_buku; // Keep the old image if no new one is uploaded
             if ($request->hasFile('gambar_buku')) {
-                // Hapus gambar lama dari storage jika ada
-                if ($buku->gambar_buku && Storage::disk('public')->exists($buku->gambar_buku)) {
-                    Storage::disk('public')->delete($buku->gambar_buku);
+                // Delete the old image
+                if ($gambarBukuPath) {
+                    Storage::disk('public')->delete($gambarBukuPath);
                 }
-            
-                // Dapatkan nama asli file dan ganti spasi dengan strip
-                $originalName = $request->file('gambar_buku')->getClientOriginalName();
-                $fileName = pathinfo($originalName, PATHINFO_FILENAME);
-                $fileExtension = $request->file('gambar_buku')->getClientOriginalExtension();
-            
-                // Tambahkan angka 4 digit secara acak ke nama file
-                $randomNumber = rand(1000, 9999); // Angka 4 digit
-                $finalName = str_replace(' ', '-', $fileName) . '-' . $randomNumber . '.' . $fileExtension;
-            
-                // Simpan file gambar baru ke folder public/img dengan nama yang telah diubah
-                $gambarBukuPath = $request->file('gambar_buku')->storeAs('img', $finalName, 'public');
-            
-                // Update path gambar baru di database
-                $buku->gambar_buku = $gambarBukuPath;
-            }
-            
 
+                $file = $request->file('gambar_buku');
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $fileName = str_replace(' ', '-', $originalName) . '.' . $file->getClientOriginalExtension();
+                $gambarBukuPath = $file->storeAs('gambar_buku', $fileName, 'public');
+            }
 
             $buku->update([
-                'judul_buku' => $request->judul_buku,
                 'gambar_buku' => $gambarBukuPath,
+                'judul_buku' => $request->judul_buku,
                 'daftar_isi' => $request->daftar_isi,
                 'kategori_id' => $request->kategori_id,
                 'pengarang_id' => $request->pengarang_id,
@@ -189,6 +160,7 @@ class BukuController extends Controller
                 ->withInput();
         }
     }
+
 
     public function destroy($id)
     {
@@ -219,8 +191,8 @@ class BukuController extends Controller
             ->join('pengarangs', 'bukus.pengarang_id', 'pengarangs.id')
             ->join('penerbits', 'bukus.penerbit_id', 'penerbits.id')
             ->where('bukus.id', $id)
-            ->first();
+            ->firstOrFail();
 
-        return view('partials.buku-detail', ['buku' => $buku]);
+        return response()->json($buku);
     }
 }
