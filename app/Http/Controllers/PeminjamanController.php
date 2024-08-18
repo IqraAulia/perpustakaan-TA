@@ -25,6 +25,7 @@ class PeminjamanController extends Controller
                     ")
             ->join('users as user', 'peminjaman.user_id', '=', 'user.id')
             ->leftJoin('users as user_created', 'peminjaman.created_by', '=', 'user_created.id')
+            ->whereIn('peminjaman.status', ['booking', 'dipinjam'])
             ->get();
 
         $peminjam = User::whereIn('users.role', ['Dosen', 'Mahasiswa'])->get();

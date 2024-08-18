@@ -17,16 +17,41 @@
                             <table id="basic-datatables" class=" datatables display table table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th>NO</th>
-                                        <th>Nama</th>
-                                        <th>Role</th>
-                                        <th>jumlah Buku</th>
-                                        <th>Tanggal Peminjaman</th>
-                                        <th>Tanggal Pengembalian</th>
-                                        <th>Detail</th>
+                                        <th>No</th>
+                                        <th>Nama Petugas</th>
+                                        <th>Tanggal pinjam</th>
+                                        <th>Tanggal kembali</th>
+                                        <th>Buku Dipinjam</th>
+                                        <th>Denda</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($peminjamans as $item)
+                                        <tr>
+                                            <td>{{$loop->iteration}}</td>
+                                            <td>
+                                                {{ $item->created_by_name ? $item->created_by_name . ' [' . $item->created_by_role . ']' : 'Petugas belum dipilih' }}
+                                            </td>
+                                            <td>{{$item->tgl_pinjam}}</td>
+                                            <td>{{$item->tgl_kembali}}</td>
+                                            <td>
+                                                <ul>
+                                                    @foreach($item->peminjamanDetail as $detail)
+                                                        <li>{{ $detail->buku->judul_buku }} - [{{ $detail->jumlah }} buah]</li>
+                                                    @endforeach
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                @if ($item->denda)
+                                                    <p>Jumlah: {{ $item->denda->denda }} <br> Deskripsi: {{ $item->denda->deskripsi }}</li>
+                                                @else
+                                                    Tidak ada denda
+                                                @endif
+                                            </td>
+                                            <td>{{$item->status}}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

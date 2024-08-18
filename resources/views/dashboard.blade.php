@@ -164,7 +164,6 @@
                         </div>
                     </div>
 
-
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -172,11 +171,16 @@
                             <div class="card-header">
                                 <div class="d-flex align-items-center">
                                     <h4 class="card-title">Daftar buku yang diajukan</h4>
+                                    <button class="btn btn-primary btn-round ms-auto"
+                                        onclick="window.location.href='{{ route('pdf.export') }}'">
+                                        <i class="fa fa-download"></i>
+                                        Download PDF
+                                    </button>
                                 </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="basic-datatables"
+                                    <table id="datatables-diajukan"
                                         class=" datatables display table table-striped table-hover">
                                         <thead>
                                             <tr>
@@ -194,9 +198,9 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $item->kategori }}</td>
                                                     <td>{{ $item->judul_buku }}</td>
-                                                    <td>pengarang</td>
-                                                    <td>penerbit</td>
-                                                    <td>tahun terbit</td>
+                                                    <td>{{ $item->pengarang }}</td>
+                                                    <td>{{ $item->penerbit }}</td>
+                                                    <td>{{ $item->tahun_terbit }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -205,6 +209,113 @@
                             </div>
                         </div>
                     </div>
+
+                    @if (auth()->user()->role == 'Kaprodi')
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="d-flex align-items-center">
+                                        <h4 class="card-title">Daftar buku yang dipinjam</h4>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="datatables-dipinjam"
+                                            class=" datatables display table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Nama Petugas</th>
+                                                    <th>Nama peminjam</th>
+                                                    <th>Tanggal pinjam</th>
+                                                    <th>Tanggal kembali</th>
+                                                    <th>Buku Dipinjam</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($listpeminjamans as $item)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>
+                                                            {{ $item->created_by_name ? $item->created_by_name . ' [' . $item->created_by_role . ']' : 'Petugas belum dipilih' }}
+                                                        </td>
+                                                        <td>{{ $item->name }} [{{ $item->role }}]</td>
+                                                        <td>{{ $item->tgl_pinjam }}</td>
+                                                        <td>{{ $item->tgl_kembali }}</td>
+                                                        <td>
+                                                            <ul>
+                                                                @foreach ($item->peminjamanDetail as $detail)
+                                                                    <li>{{ $detail->buku->judul_buku }} -
+                                                                        [{{ $detail->jumlah }} buah]</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </td>
+                                                        <td>{{ $item->status }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="d-flex align-items-center">
+                                        <h4 class="card-title">Riwayat peminjaman</h4>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class=" datatables display table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Nama Petugas</th>
+                                                    <th>Tanggal pinjam</th>
+                                                    <th>Tanggal kembali</th>
+                                                    <th>Buku Dipinjam</th>
+                                                    <th>Denda</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($riwayat as $item)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>
+                                                            {{ $item->created_by_name ? $item->created_by_name . ' [' . $item->created_by_role . ']' : 'Petugas belum dipilih' }}
+                                                        </td>
+                                                        <td>{{ $item->tgl_pinjam }}</td>
+                                                        <td>{{ $item->tgl_kembali }}</td>
+                                                        <td>
+                                                            <ul>
+                                                                @foreach ($item->peminjamanDetail as $detail)
+                                                                    <li>{{ $detail->buku->judul_buku }} -
+                                                                        [{{ $detail->jumlah }} buah]</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </td>
+                                                        <td>
+                                                            @if ($item->denda)
+                                                                <p>Jumlah: {{ $item->denda->denda }} <br> Deskripsi:
+                                                                    {{ $item->denda->deskripsi }}</li>
+                                                                @else
+                                                                    Tidak ada denda
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ $item->status }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
                 <div class="row">
                     <div class="col-md-6">
@@ -257,7 +368,7 @@
                     </div>
                 </div>
             @endif
-            @if (auth()->user()->role == 'Petugas' || auth()->user()->role == 'Dosen')
+            @if (auth()->user()->role == 'Petugas')
                 <div class="row">
                     <div class="col-sm-6 col-md-3">
                         <div class="card card-stats card-round">
@@ -403,8 +514,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="basic-datatables"
-                                        class=" datatables display table table-striped table-hover">
+                                    <table class=" datatables display table table-striped table-hover">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -421,9 +531,216 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $item->kategori }}</td>
                                                     <td>{{ $item->judul_buku }}</td>
-                                                    <td>pengarang</td>
-                                                    <td>penerbit</td>
-                                                    <td>tahun terbit</td>
+                                                    <td>{{ $item->pengarang }}</td>
+                                                    <td>{{ $item->penerbit }}</td>
+                                                    <td>{{ $item->tahun_terbit }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">User Roles</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="userRoleChart" style="width: 50%; height: 50%"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Kategori Buku</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="pieChart" style="width: 50%; height: 50%"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Penerbit Buku</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="penerbitChart" style="width: 50%; height: 50%"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Pengarang Buku</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="pengarangChart" style="width: 50%; height: 50%"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            @if (auth()->user()->role == 'Dosen')
+                <div class="row">
+                    <div class="col-sm-6 col-md-3">
+                        <div class="card card-stats card-round">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-icon">
+                                        <div class="icon-big text-center icon-info bubble-shadow-small">
+                                            <i class="fab fa-readme"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col col-stats ms-3 ms-sm-0">
+                                        <div class="numbers">
+                                            <p class="card-category">Buku</p>
+                                            <h4 class="card-title">{{ $bukusTersedia }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="card card-stats card-round">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-icon">
+                                        <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                            <i class="fas fa-arrow-left"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col col-stats ms-3 ms-sm-0">
+                                        <div class="numbers">
+                                            <p class="card-category">Peminjaman</p>
+                                            <h4 class="card-title">{{ $peminjamans }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="card card-stats card-round">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-icon">
+                                        <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                            <i class="fas fa-layer-group"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col col-stats ms-3 ms-sm-0">
+                                        <div class="numbers">
+                                            <p class="card-category">Kategori</p>
+                                            <h4 class="card-title">{{ $kategori }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="card card-stats card-round">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-icon">
+                                        <div class="icon-big text-center icon-info bubble-shadow-small">
+                                            <i class="fas fa-user-edit"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col col-stats ms-3 ms-sm-0">
+                                        <div class="numbers">
+                                            <p class="card-category">Pengarang</p>
+                                            <h4 class="card-title">{{ $pengarang }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="card card-stats card-round">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-icon">
+                                        <div class="icon-big text-center icon-success bubble-shadow-small">
+                                            <i class="fas fa-marker"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col col-stats ms-3 ms-sm-0">
+                                        <div class="numbers">
+                                            <p class="card-category">Penerbit</p>
+                                            <h4 class="card-title">{{ $penerbit }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="card card-stats card-round">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-icon">
+                                        <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                            <i class="fas fa-plus-square"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col col-stats ms-3 ms-sm-0">
+                                        <div class="numbers">
+                                            <p class="card-category">Usulan buku baru</p>
+                                            <h4 class="card-title">{{ $bukusDiajukan }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <h4 class="card-title">Daftar buku yang diajukan</h4>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class=" datatables display table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Kategori</th>
+                                                <th>Judul</th>
+                                                <th>Pengarang</th>
+                                                <th>penerbit</th>
+                                                <th>Tahun terbit</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($listDiajukan as $item)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $item->kategori }}</td>
+                                                    <td>{{ $item->judul_buku }}</td>
+                                                    <td>{{ $item->pengarang }}</td>
+                                                    <td>{{ $item->penerbit }}</td>
+                                                    <td>{{ $item->tahun_terbit }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -485,153 +802,153 @@
                 </div>
             @endif
             @if (auth()->user()->role == 'Mahasiswa')
-            <div class="row">
-                <div class="col-sm-6 col-md-3">
-                    <div class="card card-stats card-round">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div class="icon-big text-center icon-info bubble-shadow-small">
-                                        <i class="fab fa-readme"></i>
+                <div class="row">
+                    <div class="col-sm-6 col-md-3">
+                        <div class="card card-stats card-round">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-icon">
+                                        <div class="icon-big text-center icon-info bubble-shadow-small">
+                                            <i class="fab fa-readme"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col col-stats ms-3 ms-sm-0">
+                                        <div class="numbers">
+                                            <p class="card-category">Buku</p>
+                                            <h4 class="card-title">{{ $bukusTersedia }}</h4>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                        <p class="card-category">Buku</p>
-                                        <h4 class="card-title">{{ $bukusTersedia }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="card card-stats card-round">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-icon">
+                                        <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                            <i class="fas fa-arrow-left"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col col-stats ms-3 ms-sm-0">
+                                        <div class="numbers">
+                                            <p class="card-category">Peminjaman</p>
+                                            <h4 class="card-title">{{ $peminjamans }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="card card-stats card-round">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-icon">
+                                        <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                            <i class="fas fa-layer-group"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col col-stats ms-3 ms-sm-0">
+                                        <div class="numbers">
+                                            <p class="card-category">Kategori</p>
+                                            <h4 class="card-title">{{ $kategori }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="card card-stats card-round">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-icon">
+                                        <div class="icon-big text-center icon-info bubble-shadow-small">
+                                            <i class="fas fa-user-edit"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col col-stats ms-3 ms-sm-0">
+                                        <div class="numbers">
+                                            <p class="card-category">Pengarang</p>
+                                            <h4 class="card-title">{{ $pengarang }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="card card-stats card-round">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-icon">
+                                        <div class="icon-big text-center icon-success bubble-shadow-small">
+                                            <i class="fas fa-marker"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col col-stats ms-3 ms-sm-0">
+                                        <div class="numbers">
+                                            <p class="card-category">Penerbit</p>
+                                            <h4 class="card-title">{{ $penerbit }}</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-3">
-                    <div class="card card-stats card-round">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div class="icon-big text-center icon-secondary bubble-shadow-small">
-                                        <i class="fas fa-arrow-left"></i>
-                                    </div>
-                                </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                        <p class="card-category">Peminjaman</p>
-                                        <h4 class="card-title">{{ $peminjaman }}</h4>
-                                    </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">User Roles</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="userRoleChart" style="width: 50%; height: 50%"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-6 col-md-3">
-                    <div class="card card-stats card-round">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div class="icon-big text-center icon-primary bubble-shadow-small">
-                                        <i class="fas fa-layer-group"></i>
-                                    </div>
-                                </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                        <p class="card-category">Kategori</p>
-                                        <h4 class="card-title">{{ $kategori }}</h4>
-                                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Kategori Buku</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="pieChart" style="width: 50%; height: 50%"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-6 col-md-3">
-                    <div class="card card-stats card-round">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div class="icon-big text-center icon-info bubble-shadow-small">
-                                        <i class="fas fa-user-edit"></i>
-                                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Penerbit Buku</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="penerbitChart" style="width: 50%; height: 50%"></canvas>
                                 </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                        <p class="card-category">Pengarang</p>
-                                        <h4 class="card-title">{{ $pengarang }}</h4>
-                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Pengarang Buku</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="pengarangChart" style="width: 50%; height: 50%"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-3">
-                    <div class="card card-stats card-round">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-icon">
-                                    <div class="icon-big text-center icon-success bubble-shadow-small">
-                                        <i class="fas fa-marker"></i>
-                                    </div>
-                                </div>
-                                <div class="col col-stats ms-3 ms-sm-0">
-                                    <div class="numbers">
-                                        <p class="card-category">Penerbit</p>
-                                        <h4 class="card-title">{{ $penerbit }}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">User Roles</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="userRoleChart" style="width: 50%; height: 50%"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Kategori Buku</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="pieChart" style="width: 50%; height: 50%"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Penerbit Buku</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="penerbitChart" style="width: 50%; height: 50%"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Pengarang Buku</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="pengarangChart" style="width: 50%; height: 50%"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             @endif
         </div>
     </div>

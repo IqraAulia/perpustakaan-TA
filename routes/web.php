@@ -21,6 +21,8 @@ Route::get('/', function () {
 });
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/export-pdf', [HomeController::class, 'exportPDF'])->name('pdf.export');
+
 
 Route::group(['prefix' => 'kategori', 'as' => 'kategori.',], function () {
     Route::get('/', [KategoriController::class, 'index'])->name('index');

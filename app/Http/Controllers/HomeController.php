@@ -10,9 +10,11 @@ use App\Models\Penerbit;
 use App\Models\Pengarang;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class HomeController extends Controller
@@ -31,6 +33,29 @@ class HomeController extends Controller
             ->join('pengarangs', 'bukus.pengarang_id', '=', 'pengarangs.id')
             ->join('penerbits', 'bukus.penerbit_id', '=', 'penerbits.id')
             ->where('bukus.status', 'diajukan')
+            ->get();
+        $listpeminjamans = Peminjaman::with(['peminjamanDetail.buku', 'denda'])->selectRaw("
+                    peminjaman.*,
+                    user_created.name as created_by_name,
+                    user_created.role as created_by_role,
+                    user.name as name,
+                    user.role as role
+                    ")
+            ->join('users as user', 'peminjaman.user_id', '=', 'user.id')
+            ->leftJoin('users as user_created', 'peminjaman.created_by', '=', 'user_created.id')
+            ->whereIn('peminjaman.status', ['booking', 'dipinjam'])
+            ->get();
+        $riwayat = Peminjaman::with(['peminjamanDetail.buku', 'denda'])
+            ->selectRaw("
+                peminjaman.*,
+                user_created.name as created_by_name,
+                user_created.role as created_by_role,
+                user.name as name,
+                user.role as role
+            ")
+            ->join('users as user', 'peminjaman.user_id', '=', 'user.id')
+            ->leftJoin('users as user_created', 'peminjaman.created_by', '=', 'user_created.id')
+            ->where('peminjaman.status', 'selesai')
             ->get();
         $chartkategori = Buku::select('kategoris.nama', DB::raw('count(*) as total'))
             ->join('kategoris', 'bukus.kategori_id', '=', 'kategoris.id')
@@ -53,7 +78,9 @@ class HomeController extends Controller
         $user = User::where('role', '!=', 'mahasiswa')->count();
         $mahasiswa = User::where('role', 'mahasiswa')->count();
         $peminjaman = Peminjaman::count();
+        $peminjamans = Peminjaman::where('user_id', Auth::id())->count();
         $penerbit = Penerbit::count();
+
 
         return view('dashboard', [
             'bukusTersedia' => $bukusTersedia,
@@ -68,7 +95,29 @@ class HomeController extends Controller
             'user' => $user,
             'mahasiswa' => $mahasiswa,
             'peminjaman' => $peminjaman,
+            'peminjamans' => $peminjamans,
+            'listpeminjamans' => $listpeminjamans,
+            'riwayat' => $riwayat,
             'penerbit' => $penerbit,
         ]);
     }
+
+    public function exportPDF()
+{
+    $listDiajukan = Buku::selectRaw("
+        bukus.*,
+        kategoris.nama as kategori,
+        pengarangs.nama as pengarang,
+        penerbits.nama as penerbit
+    ")
+        ->join('kategoris', 'bukus.kategori_id', '=', 'kategoris.id')
+        ->join('pengarangs', 'bukus.pengarang_id', '=', 'pengarangs.id')
+        ->join('penerbits', 'bukus.penerbit_id', '=', 'penerbits.id')
+        ->where('bukus.status', 'diajukan')
+        ->get();
+
+    $pdf = Pdf::loadView('pdf.listDiajukan', ['listDiajukan' => $listDiajukan]);
+    return $pdf->download('Daftar_Buku_Diajukan.pdf');
+}
+
 }
