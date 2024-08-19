@@ -50,9 +50,13 @@
                                                 <td>{{$item->tgl_pinjam}}</td>
                                                 <td>{{$item->tgl_kembali}}</td>
                                                 <td>
-                                                    <ul>
+                                                    <ul style="padding-left: 0; list-style: none;">
                                                         @foreach($item->peminjamanDetail as $detail)
-                                                            <li>{{ $detail->buku->judul_buku }} - [{{ $detail->jumlah }} buah]</li>
+                                                            <li style="margin-bottom: 8px;">
+                                                                <strong>{{ $detail->buku->judul_buku }}</strong> <br>
+                                                                <span style="font-size: 90%; color: #555;">Kode Buku: {{ $detail->buku_kode ?? '-' }}</span> <br>
+                                                                <span style="font-size: 90%; color: #555;">Jumlah: {{ $detail->jumlah }} buah</span>
+                                                            </li>
                                                         @endforeach
                                                     </ul>
                                                 </td>
@@ -70,9 +74,11 @@
                                                             <!-- Tombol untuk proses booking -->
                                                             <button type="button" data-id="{{ $item->id }}"
                                                                 class="btn btn-link btn-success btn-approve"
-                                                                data-original-title="Approve">
+                                                                data-original-title="Approve" data-bs-toggle="modal"
+                                                                data-bs-target="#approveModal" data-peminjaman="{{ json_encode($item->peminjamanDetail) }}">
                                                                 <i class="fa fa-check"></i> Approve
                                                             </button>
+
                                                             <button type="button" data-id="{{ $item->id }}"
                                                                 class="btn btn-link btn-warning btn-reject"
                                                                 data-original-title="Reject">
@@ -325,8 +331,8 @@
                             <input type="number" class="form-control" id="fine_amount" name="fine_amount" placeholder="Masukkan jumlah denda">
                         </div>
                         <div class="mb-3">
-                            <label for="fine_description" class="form-label">Deskripsi Denda (Opsional)</label>
-                            <textarea class="form-control" id="fine_description" name="fine_description" rows="3" placeholder="Masukkan deskripsi denda"></textarea>
+                            <label for="fine_description" class="form-label">Catatan</label>
+                            <textarea class="form-control" id="fine_description" name="fine_description" rows="3" placeholder="Masukkan Catatan"></textarea>
                         </div>
                         <input type="hidden" id="peminjaman_id" name="peminjaman_id">
                     </form>
@@ -337,7 +343,33 @@
                 </div>
             </div>
         </div>
+    
     </div>
+
+    {{-- modal approve --}}
+    <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="approveModalLabel">Approve Peminjaman</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="approveForm" method="POST">
+                        @csrf
+                        <div id="bookList"></div>
+                        <input type="hidden" name="peminjaman_id" id="peminjaman_id">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="confirmApprove">Approve</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 @endsection
 
 @section('js')
@@ -436,30 +468,46 @@
 
         $(document).ready(function() {
             // Approve action with confirmation
-            $('.btn-approve').click(function() {
-                let id = $(this).data('id');
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "Do you want to approve this peminjaman?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, approve it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '/peminjaman/' + id + '/approve',
-                            method: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                            },
-                            success: function(response) {
-                                Swal.fire('Approved!', 'Peminjaman has been approved.', 'success').then(() => {
-                                    location.reload();
-                                });
-                            }
+            $('.btn-approve').on('click', function() {
+                var peminjamanId = $(this).data('id');
+                var peminjamanDetail = $(this).data('peminjaman');
+                $('#peminjaman_id').val(peminjamanId);
+
+                var bookListHtml = '';
+                peminjamanDetail.forEach(function(detail) {
+                    bookListHtml += `
+                        <div class="mb-3">
+                            <label>${detail.buku.judul_buku} - ${detail.jumlah} buah</label>
+                            <input type="text" name="buku_kode[]" class="form-control" placeholder="Enter book code" required>
+                            <input type="hidden" name="peminjaman_detail_id[]" value="${detail.id}">
+                        </div>`;
+                });
+
+                $('#approveForm').attr('action', `/peminjaman/${peminjamanId}/approve`);
+                $('#bookList').html(bookListHtml);
+            });
+
+            $('#confirmApprove').on('click', function() {
+                // Submit the form via AJAX
+                var form = $('#approveForm');
+                var url = form.attr('action');
+                
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function(response) {
+                        // Close the modal
+                        $('#approveModal').modal('hide');
+
+                        // Show success message
+                        Swal.fire('Approved!', 'Peminjaman has been approved.', 'success').then(() => {
+                            location.reload();
                         });
+                    },
+                    error: function(xhr) {
+                        // Handle error
+                        Swal.fire('Error!', 'Something went wrong. Please try again.', 'error');
                     }
                 });
             });

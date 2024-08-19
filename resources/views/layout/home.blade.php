@@ -180,8 +180,13 @@
         //   fillColor: "rgba(255, 165, 52, .14)",
         // });
 
-        $("#basic-datatables").DataTable({});
-        $(".datatables").DataTable({});
+        if (!$.fn.DataTable.isDataTable('#basic-datatables')) {
+            $("#basic-datatables").DataTable({});
+        }
+
+        if (!$.fn.DataTable.isDataTable('.datatables')) {
+            $(".datatables").DataTable({});
+        }
     </script>
     <script>
         function updateDateTime() {

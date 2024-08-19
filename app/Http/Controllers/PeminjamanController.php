@@ -169,19 +169,28 @@ class PeminjamanController extends Controller
     //     }
     // }
 
-    public function approve($id)
+    public function approve(Request $request, $id)
     {
         $peminjaman = Peminjaman::findOrFail($id);
+        
+        // Update the buku_kode for each peminjaman detail
+        foreach ($request->peminjaman_detail_id as $index => $detailId) {
+            $peminjamanDetail = PeminjamanDetail::findOrFail($detailId);
+            $peminjamanDetail->buku_kode = $request->buku_kode[$index];
+            $peminjamanDetail->save();
+        }
+
+        // Update the status to 'dipinjam'
         $peminjaman->status = 'dipinjam';
 
-        // Kurangi stok buku
+        // Reduce the stock of each book
         foreach ($peminjaman->peminjamanDetail as $detail) {
             $buku = $detail->buku;
             $buku->stok -= $detail->jumlah;
             $buku->save();
         }
-                
-        // Update created_by berdasarkan pengguna yang login
+                    
+        // Update created_by to the currently logged-in user
         $peminjaman->created_by = Auth::id();
         $peminjaman->save();
 

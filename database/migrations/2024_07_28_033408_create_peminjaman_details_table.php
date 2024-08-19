@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pimenijaman_id');
             $table->foreignId('buku_id');
+            $table->string('buku_kode')->nullable();
             $table->integer('jumlah');
             $table->timestamps();
         });
