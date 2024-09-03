@@ -10,17 +10,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+
 class PinjamController extends Controller
 {
     public function index()
     {
-       
+
         return view('page.pinjam.index', [
-            'bukus' => Buku::all(),
+            'bukus' => Buku::where('stok', '>', 0)->get(),
             'tglPinjam' => date('Y-m-d'),
             'tglKembali' => date('Y-m-d', strtotime('+7 days')),
         ]);
-
     }
     public function store(Request $request)
     {
@@ -63,7 +63,6 @@ class PinjamController extends Controller
                 ->with('error', 'Gagal menambah data: ' . $th->getMessage())
                 ->withInput();
         }
-    
     }
 
     public function update(Request $request, $id)

@@ -121,6 +121,11 @@
     <script src="{{ asset('kaiadmin-lite-1.0.0/assets/js/core/popper.min.js') }}"></script>
     <script src="{{ asset('kaiadmin-lite-1.0.0/assets/js/core/bootstrap.min.js') }}"></script>
 
+    {{-- Select2 --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>    
+
+
     <!-- jQuery Scrollbar -->
     <script src="{{ asset('kaiadmin-lite-1.0.0/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
 

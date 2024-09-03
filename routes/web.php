@@ -120,6 +120,8 @@ Route::group(['prefix' => 'pinjam', 'as' => 'pinjam.',], function () {
     Route::post('/store', [PinjamController::class, 'store'])->name('store');
     Route::post('/update', [PinjamController::class, 'update'])->name('update');
     Route::delete('/destroy', [PinjamController::class, 'destroy'])->name('destroy');
+    Route::get('/pinjam/buku/search', [PinjamController::class, 'searchBuku'])->name('pinjam.buku.search');
+
 });
 
 Route::group(['prefix' => 'req-buku', 'as' => 'req-buku.',], function () {
