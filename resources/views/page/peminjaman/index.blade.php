@@ -54,7 +54,7 @@
                                                         @foreach($item->peminjamanDetail as $detail)
                                                             <li style="margin-bottom: 8px;">
                                                                 <strong>{{ $detail->buku->judul_buku }}</strong> <br>
-                                                                <span style="font-size: 90%; color: #555;">Kode Buku: {{ $detail->buku_kode ?? '-' }}</span> <br>
+                                                                <span style="font-size: 90%; color: #555;">Kondisi buku: {{ $detail->buku_kode ?? '-' }}</span> <br>
                                                                 <span style="font-size: 90%; color: #555;">Jumlah: {{ $detail->jumlah }} buah</span>
                                                             </li>
                                                         @endforeach
@@ -478,7 +478,7 @@
                     bookListHtml += `
                         <div class="mb-3">
                             <label>${detail.buku.judul_buku} - ${detail.jumlah} buah</label>
-                            <input type="text" name="buku_kode[]" class="form-control" placeholder="Enter book code" required>
+                            <input type="text" name="buku_kode[]" class="form-control" placeholder="Masukan kondisi buku" required>
                             <input type="hidden" name="peminjaman_detail_id[]" value="${detail.id}">
                         </div>`;
                 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Penerbit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,9 +12,15 @@ class PenerbitController extends Controller
 {
     public function index()
     {
-        return view('page.penerbit.index', [
-            'penerbit' => Penerbit::all(),
-        ]);
+       
+
+        if (Auth::user()->role == 'Mahasiswa') {
+            return redirect()->route('home');
+        }else {
+            return view('page.penerbit.index', [
+                'penerbit' => Penerbit::all(),
+            ]);
+        }
     }
     public function store(Request $request)
     {

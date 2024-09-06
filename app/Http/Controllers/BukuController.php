@@ -7,6 +7,7 @@ use App\Models\Kategori;
 use App\Models\Penerbit;
 use App\Models\Pengarang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -32,12 +33,18 @@ class BukuController extends Controller
         $pengarang = Pengarang::get();
         $penerbit = Penerbit::get();
 
-        return view('page.buku.index', [
-            'bukus' => $bukus,
-            'kategori' => $kategori,
-            'pengarang' => $pengarang,
-            'penerbit' => $penerbit,
-        ]);
+        if (Auth::user()->role == 'Mahasiswa') {
+            return redirect()->route('home');
+        }else {
+            return view('page.buku.index', [
+                'bukus' => $bukus,
+                'kategori' => $kategori,
+                'pengarang' => $pengarang,
+                'penerbit' => $penerbit,
+            ]);
+        }
+
+        
     }
 
     public function store(Request $request)

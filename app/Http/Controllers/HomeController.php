@@ -75,8 +75,8 @@ class HomeController extends Controller
 
         $kategori = Kategori::count();
         $pengarang = Pengarang::count();
-        $user = User::where('role', '!=', 'mahasiswa')->count();
-        $mahasiswa = User::where('role', 'mahasiswa')->count();
+        $user = User::where('role', '!=', 'Mahasiswa')->count();
+        $mahasiswa = User::where('role', 'Mahasiswa')->count();
         $peminjaman = Peminjaman::count();
         $peminjamans = Peminjaman::where('user_id', Auth::id())->count();
         $penerbit = Penerbit::count();

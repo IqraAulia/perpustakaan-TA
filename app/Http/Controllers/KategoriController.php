@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -12,9 +13,13 @@ class KategoriController extends Controller
    
     public function index()
     {
-        return view('page.kategori.index', [
-            'kategoris' => Kategori::all(),
-        ]);
+        if (Auth::user()->role == 'Mahasiswa') {
+            return redirect()->route('home');
+        }else {
+            return view('page.kategori.index', [
+                'kategoris' => Kategori::all(),
+            ]);
+        }
 
     }
     public function store(Request $request)

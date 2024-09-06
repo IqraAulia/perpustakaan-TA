@@ -18,7 +18,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Petugas</th>
+                                        <th>Nama Peminjam</th>
                                         <th>Tanggal pinjam</th>
                                         <th>Tanggal kembali</th>
                                         <th>Buku Dipinjam</th>
@@ -30,15 +30,17 @@
                                     @foreach ($peminjamans as $item)
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
-                                            <td>
-                                                {{ $item->created_by_name ? $item->created_by_name . ' [' . $item->created_by_role . ']' : 'Petugas belum dipilih' }}
-                                            </td>
+                                            <td>{{$item->name}} [{{$item->role}}]</td>
                                             <td>{{$item->tgl_pinjam}}</td>
                                             <td>{{$item->tgl_kembali}}</td>
                                             <td>
-                                                <ul>
+                                                <ul style="padding-left: 0; list-style: none;">
                                                     @foreach($item->peminjamanDetail as $detail)
-                                                        <li>{{ $detail->buku->judul_buku }} - [{{ $detail->jumlah }} buah]</li>
+                                                        <li style="margin-bottom: 8px;">
+                                                            <strong>{{ $detail->buku->judul_buku }}</strong> <br>
+                                                            <span style="font-size: 90%; color: #555;">Kondisi buku: {{ $detail->buku_kode ?? '-' }}</span> <br>
+                                                            <span style="font-size: 90%; color: #555;">Jumlah: {{ $detail->jumlah }} buah</span>
+                                                        </li>
                                                     @endforeach
                                                 </ul>
                                             </td>

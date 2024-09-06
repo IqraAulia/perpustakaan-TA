@@ -4,6 +4,7 @@ use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\ListBukuController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PenerbitController;
@@ -16,10 +17,15 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+// Mengarahkan '/' ke landing page
+Route::get('/', [LandingController::class, 'index'])->name('landingpage');
 
+// Route untuk login dan logout tetap sama
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+// Route lainnya
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/export-pdf', [HomeController::class, 'exportPDF'])->name('pdf.export');
 
@@ -133,14 +139,8 @@ Route::group(['prefix' => 'req-buku', 'as' => 'req-buku.',], function () {
 
 
 
-
-Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-
-
-
 Route::get('/tables', function () {
     return view('komponen.tables');
 })->name('tables');
+
 

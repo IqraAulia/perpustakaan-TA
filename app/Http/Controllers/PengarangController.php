@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pengarang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -12,9 +13,15 @@ class PengarangController extends Controller
 
     public function index()
     {
-        return view('page.pengarang.index', [
-            'pengarang' => Pengarang::all(),
-        ]);
+        
+
+        if (Auth::user()->role == 'Mahasiswa') {
+            return redirect()->route('home');
+        }else {
+            return view('page.pengarang.index', [
+                'pengarang' => Pengarang::all(),
+            ]);
+        }
     }
     public function store(Request $request)
     {

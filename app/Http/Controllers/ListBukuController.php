@@ -29,6 +29,8 @@ class ListBukuController extends Controller
         $kategori = Kategori::get();
         $pengarang = Pengarang::get();
         $penerbit = Penerbit::get();
+
+        
     
         return view('page.list-buku.index', [
             'bukus' => $bukus,

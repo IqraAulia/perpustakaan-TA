@@ -31,14 +31,21 @@ class PeminjamanController extends Controller
         $peminjam = User::whereIn('users.role', ['Dosen', 'Mahasiswa'])->get();
         $petugas = User::whereIn('users.role', ['Super admin', 'Admin', 'Petugas', 'Kaprodi'])->get();
 
-        return view('page.peminjaman.index', [
-            'peminjamans' => $peminjamans,
-            'peminjam' => $peminjam,
-            'petugas' => $petugas,
-            'bukus' => Buku::all(),
-            'tglPinjam' => date('Y-m-d'),
-            'tglKembali' => date('Y-m-d', strtotime('+7 days')),
-        ]);
+        
+        if (Auth::user()->role == 'Mahasiswa') {
+            return redirect()->route('home');
+        }else {
+            return view('page.peminjaman.index', [
+                'peminjamans' => $peminjamans,
+                'peminjam' => $peminjam,
+                'petugas' => $petugas,
+                'bukus' => Buku::all(),
+                'tglPinjam' => date('Y-m-d'),
+                'tglKembali' => date('Y-m-d', strtotime('+7 days')),
+            ]);
+        }
+
+        
     }
     public function store(Request $request)
     {
